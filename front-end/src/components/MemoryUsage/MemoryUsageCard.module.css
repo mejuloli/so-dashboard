@@ -1,0 +1,55 @@
+/* so-dashboard/front-end/src/components/MemoryUsage/MemoryUsageCard.module.css */
+.memorySection {
+    margin-bottom: 12px;
+}
+
+.labelWithValue {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 6px;
+}
+
+.labelText {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-right: 8px;
+}
+
+.valueText {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    text-align: right;
+}
+
+.memoryDetails {
+    display: flex;
+    justify-content: space-between;
+    /* Melhor para 2 itens */
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border-soft);
+}
+
+.detailItem {
+    /* Estilos para cada item de detalhe, se necessário */
+}
+
+.chartTitle {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 20px;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.chartContainer {
+    width: 100%;
+    height: 200px;
+}
