@@ -1,0 +1,20 @@
+/* so-dashboard/front-end/src/components/Card/Card.module.css */
+.cardContent {
+    /* Estilos específicos para o conteúdo do card, se necessário */
+}
+
+.cardIcon {
+    margin-right: 10px;
+    /* Aumentei um pouco o espaçamento */
+    display: flex;
+    /* Para melhor alinhamento vertical do ícone */
+    align-items: center;
+    color: var(--text-secondary);
+    /* Cor padrão para o ícone do título */
+}
+
+.cardIcon svg {
+    /* Para estilizar o ícone se for um SVG de react-icons */
+    line-height: 1;
+    /* Ajuda no alinhamento vertical */
+}

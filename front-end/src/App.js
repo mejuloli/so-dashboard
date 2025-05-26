@@ -1,24 +1,17 @@
-import logo from './logo.svg';
-import './App.css';
+// so-dashboard/front-end/src/App.js
+import React from 'react';
+import DashboardLayout from './components/Layout/DashboardLayout';
+import CpuUsageCard from './components/CpuUsage/CpuUsageCard';
+import MemoryUsageCard from './components/MemoryUsage/MemoryUsageCard';
+// import './App.css'; // Se não estiver usando, pode remover a importação e o arquivo
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <DashboardLayout>
+      <CpuUsageCard />
+      <MemoryUsageCard />
+      {/* <ProcessList /> Adicionaremos depois */}
+    </DashboardLayout>
   );
 }
 
