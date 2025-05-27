@@ -40,3 +40,16 @@
     width: 100%;
     height: 250px;
 }
+
+.loadingText,
+.errorText {
+    color: var(--text-secondary);
+    text-align: center;
+    padding: 20px;
+    font-style: italic;
+}
+
+.errorText {
+    color: var(--chart-color-cpu-core6);
+    /* Cor vermelha para erro */
+}

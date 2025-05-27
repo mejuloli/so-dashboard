@@ -17,26 +17,17 @@
 
   /* Cores para Gráficos (usadas em CORE_CHART_COLORS e ProgressBar) */
   --chart-color-cpu-core1: #c8ce13;
-  /* Amarelo-esverdeado (paleta original color1) */
   --chart-color-cpu-core2: #349e97;
-  /* Teal (paleta original color3) */
   --chart-color-cpu-core3: #de1a72;
-  /* Rosa (paleta original color5) */
   --chart-color-cpu-core4: #66b3ff;
-  /* Azul claro */
   --chart-color-cpu-core5: #ffb366;
-  /* Laranja claro */
   --chart-color-cpu-core6: #ff6666;
-  /* Vermelho claro */
   --chart-color-cpu-core7: #a366ff;
-  /* Roxo claro */
   --chart-color-cpu-core8: #66ffb3;
-  /* Verde menta claro */
 
   --accent-color-memory: #53bdeb;
-  /* Azul claro usado pelo WhatsApp para links/foco (usado para memória) */
+  /* Azul para memória */
 
-  /* Para um botão "claro" com texto escuro (como o "Baixar" do WhatsApp) */
   --button-primary-bg: var(--text-primary);
   --button-primary-text: var(--background-body);
 
@@ -63,13 +54,11 @@ code {
   font-family: var(--font-family-monospace);
 }
 
-/* Estilo para os cards que serão criados */
 .dashboard-card {
   background-color: var(--background-card);
   border-radius: var(--card-border-radius);
   padding: var(--padding-card);
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08), 0 2px 2px rgba(0, 0, 0, 0.12);
-  /* Sombra mais sutil */
 }
 
 .dashboard-card-title {

@@ -23,15 +23,12 @@
   font-weight: 600;
   color: var(--text-primary);
   display: flex;
-  /* Para alinhar ícone e texto do logo */
   align-items: center;
 }
 
 .logo svg {
-  /* Para estilizar o ícone no logo se usar react-icons */
   margin-right: 8px;
   height: 22px;
-  /* Ajuste conforme o ícone */
   width: auto;
 }
 
@@ -44,12 +41,16 @@
 .mainContent {
   flex-grow: 1;
   padding: var(--padding-main);
-  display: grid;
-  /* grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));  Ajuste minmax conforme necessário */
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 400px), 1fr));
-  /* Mais responsivo */
+  display: flex;
+  /* Alterado para flex */
+  flex-direction: column;
+  /* Organiza os grupos de cards verticalmente */
   gap: var(--padding-main);
+  /* Espaço entre o grupo de cards de cima e a lista de processos */
 }
+
+/* Removido o grid daqui, pois o App.js e o ProcessListCard.module.css vão controlar seus grids internos */
+
 
 .footer {
   text-align: center;

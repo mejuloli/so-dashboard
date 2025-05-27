@@ -1,6 +1,24 @@
 /* so-dashboard/front-end/src/components/MemoryUsage/MemoryUsageCard.module.css */
+.memoryTypeSection {
+    margin-bottom: 20px;
+}
+
+.memoryTypeSection:last-child {
+    margin-bottom: 0;
+}
+
+.memoryTypeTitle {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px dashed var(--border-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
 .memorySection {
-    margin-bottom: 12px;
+    margin-bottom: 10px;
 }
 
 .labelWithValue {
@@ -26,7 +44,6 @@
 .memoryDetails {
     display: flex;
     justify-content: space-between;
-    /* Melhor para 2 itens */
     font-size: 0.85rem;
     color: var(--text-secondary);
     margin-bottom: 20px;
@@ -52,4 +69,17 @@
 .chartContainer {
     width: 100%;
     height: 200px;
+}
+
+.loadingText,
+.errorText {
+    color: var(--text-secondary);
+    text-align: center;
+    padding: 20px;
+    font-style: italic;
+}
+
+.errorText {
+    color: var(--chart-color-cpu-core6);
+    /* Cor vermelha para erro */
 }

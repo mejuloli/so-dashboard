@@ -5,16 +5,15 @@ import styles from './ProgressBar.module.css';
 const ProgressBar = ({ value, max = 100, height = '10px', color, showValueText = false }) => {
     const percentage = max > 0 ? (value / max) * 100 : 0;
 
-    let barColor = color; // Usa a cor passada por prop, se houver
+    let barColor = color;
 
-    if (!barColor) { // Define cores dinâmicas padrão APENAS se nenhuma cor for passada
+    if (!barColor) {
         if (percentage > 85) {
-            // Usar as variáveis CSS definidas em index.css para consistência
-            barColor = 'var(--chart-color-cpu-core6)'; // Ex: Vermelho
+            barColor = 'var(--chart-color-cpu-core6)';
         } else if (percentage > 60) {
-            barColor = 'var(--chart-color-cpu-core5)'; // Ex: Laranja
+            barColor = 'var(--chart-color-cpu-core5)';
         } else {
-            barColor = 'var(--chart-color-cpu-core1)'; // Ex: Amarelo-esverdeado
+            barColor = 'var(--chart-color-cpu-core1)';
         }
     }
 
@@ -23,11 +22,11 @@ const ProgressBar = ({ value, max = 100, height = '10px', color, showValueText =
             <div className={styles.progressBarContainer} style={{ height }}>
                 <div
                     className={styles.progressBarFill}
-                    style={{ width: `${Math.min(percentage, 100)}%`, backgroundColor: barColor }} // Garante que não passe de 100%
+                    style={{ width: `${Math.min(percentage, 100)}%`, backgroundColor: barColor }}
                 />
             </div>
             {showValueText && (
-                <span className={styles.progressBarValueText}>{value.toFixed(1)}%</span>
+                <span className={styles.progressBarValueText}>{(value || 0).toFixed(1)}%</span>
             )}
         </div>
     );

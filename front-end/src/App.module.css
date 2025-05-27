@@ -1,0 +1,8 @@
+/* so-dashboard/front-end/src/App.module.css */
+.topCardsContainer {
+  display: grid;
+  /* Tenta colocar 2 colunas se houver espaço, senão 1 coluna */
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 450px), 1fr)); 
+  gap: var(--padding-main); /* Usa a mesma variável de espaçamento */
+  margin-bottom: var(--padding-main); /* Espaço antes da lista de processos */
+}

@@ -3,35 +3,24 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    /* Espaço entre a barra e o texto (se houver) */
-    width: 100%;
-    /* Garantir que o wrapper ocupe toda a largura disponível */
 }
 
 .progressBarContainer {
     flex-grow: 1;
-    /* Faz a barra ocupar o espaço principal disponível no wrapper */
     background-color: var(--background-body);
-    /* Ou um cinza mais claro que o fundo do card */
     border-radius: 4px;
     overflow: hidden;
-    /* border: 1px solid var(--border-soft); */
-    /* Opcional, pode deixar mais "flat" */
 }
 
 .progressBarFill {
     height: 100%;
     border-radius: 4px;
-    /* Manter o mesmo radius do container */
     transition: width 0.3s ease-in-out, background-color 0.3s ease-in-out;
 }
 
 .progressBarValueText {
     font-size: 0.8rem;
     color: var(--text-secondary);
-    min-width: 45px;
-    /* Largura mínima para o texto não quebrar e alinhar */
+    min-width: 40px;
     text-align: right;
-    flex-shrink: 0;
-    /* O texto não deve encolher */
 }

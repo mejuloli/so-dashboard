@@ -1,7 +1,7 @@
 // so-dashboard/front-end/src/components/Layout/DashboardLayout.js
 import React from 'react';
 import styles from './DashboardLayout.module.css';
-// import { RiDashboardLine } from 'react-icons/ri'; // Exemplo de ícone para o logo
+// import { RiDashboardLine } from 'react-icons/ri'; 
 
 const Header = () => (
     <header className={styles.header}>
@@ -10,7 +10,7 @@ const Header = () => (
             SO-Dashboard
         </div>
         <nav className={styles.nav}>
-            {/* Mock data, será dinâmico depois */}
+            <span>Servidor: JKOGM</span>
             <span>Intervalo: 5s</span>
         </nav>
     </header>
@@ -24,7 +24,7 @@ const DashboardLayout = ({ children }) => {
                 {children}
             </main>
             <footer className={styles.footer}>
-                Entrega A - Dashboard Visual com Mock Data
+                Dashboard de Sistema Operacional desenvolvido por Julia Kamilly de Oliveira e Gabriela Morikawa.
             </footer>
         </div>
     );
