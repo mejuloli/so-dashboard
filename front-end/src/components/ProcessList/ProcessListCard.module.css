@@ -62,7 +62,6 @@
     background-color: rgba(255, 255, 255, 0.05);
 }
 
-/* --- ESTILOS DA TABELA --- */
 .tableContainer {
     width: 100%;
     overflow-x: auto;
@@ -75,58 +74,8 @@
     width: 100%;
     border-collapse: collapse;
     font-size: 0.85rem;
-    table-layout: fixed;
-    /* <<<<<<<<<<<< MUDANÇA PRINCIPAL AQUI */
+    table-layout: auto;
 }
-
-/* Definindo larguras para as colunas */
-/* Você pode ajustar essas porcentagens ou usar valores fixos (px, em) */
-/* A soma não precisa ser 100% se você deixar uma coluna sem largura definida para ocupar o restante */
-.tableContainer th:nth-child(1),
-.tableContainer td:nth-child(1) {
-    width: 8%;
-}
-
-/* PID */
-.tableContainer th:nth-child(2),
-.tableContainer td:nth-child(2) {
-    width: 30%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-/* Nome (com ellipsis) */
-.tableContainer th:nth-child(3),
-.tableContainer td:nth-child(3) {
-    width: 15%;
-}
-
-/* Usuário */
-.tableContainer th:nth-child(4),
-.tableContainer td:nth-child(4) {
-    width: 12%;
-}
-
-/* Status */
-.tableContainer th:nth-child(5),
-.tableContainer td:nth-child(5) {
-    width: 10%;
-}
-
-/* CPU % */
-.tableContainer th:nth-child(6),
-.tableContainer td:nth-child(6) {
-    width: 12%;
-}
-
-/* Mem. (MB) */
-.tableContainer th:nth-child(7),
-.tableContainer td:nth-child(7) {
-    width: 13%;
-}
-
-/* Threads */
-
 
 .tableContainer thead th {
     background-color: var(--background-card);
@@ -137,11 +86,6 @@
     border-bottom: 1px solid var(--border-medium);
     cursor: pointer;
     user-select: none;
-    /* Se o cabeçalho fixo com sticky for desejado e a tabela tiver scroll interno:
-    position: sticky;
-    top: 0;
-    z-index: 1; 
-    */
 }
 
 .tableContainer thead th:hover {
@@ -154,10 +98,24 @@
     border-bottom: 1px solid var(--border-soft);
     white-space: nowrap;
     overflow: hidden;
-    /* Para que o text-ellipsis funcione */
     text-overflow: ellipsis;
-    /* Adiciona "..." se o conteúdo for muito longo */
+    max-width: 250px;
+    /* Limita largura de células com muito texto */
 }
+
+.tableContainer tr td:first-child,
+.tableContainer tr th:first-child {
+    max-width: 80px;
+}
+
+/* PID */
+.tableContainer tr td:nth-child(2),
+.tableContainer tr th:nth-child(2) {
+    max-width: 300px;
+}
+
+/* Nome */
+
 
 .tableContainer tr:last-child td {
     border-bottom: none;
@@ -167,14 +125,18 @@
     background-color: rgba(255, 255, 255, 0.03);
 }
 
+.tableContainer tbody tr.clickableRow:hover {
+    background-color: rgba(255, 255, 255, 0.07);
+    cursor: pointer;
+}
+
+/* Destaque maior */
 .noDataCell {
     text-align: center !important;
     padding: 20px !important;
     color: var(--text-secondary);
     font-style: italic;
 }
-
-/* --- FIM DOS ESTILOS DA TABELA --- */
 
 .loadMoreButton {
     display: block;
@@ -215,4 +177,9 @@
 
 .errorText {
     color: var(--chart-color-cpu-core6);
+}
+
+.tableContainer tbody tr.clickableRow:hover {
+    background-color: rgba(255, 255, 255, 0.07);
+    cursor: pointer;
 }

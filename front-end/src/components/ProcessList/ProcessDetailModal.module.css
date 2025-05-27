@@ -1,0 +1,115 @@
+/* so-dashboard/front-end/src/components/ProcessList/ProcessDetailModal.module.css */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    /* Fundo semi-transparente */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    /* Acima de outros conteúdos */
+    padding: 20px;
+    /* Para não colar nas bordas em telas pequenas */
+}
+
+.modalContent {
+    /* .dashboard-card já aplica fundo, borda arredondada, padding base e sombra */
+    padding: 0 !important;
+    /* Remover padding do .dashboard-card para controle total aqui */
+    width: 100%;
+    max-width: 650px;
+    /* Largura máxima do modal */
+    max-height: 90vh;
+    /* Altura máxima, permite scroll interno se necessário */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    /* Para que o border-radius funcione com o conteúdo de scroll */
+}
+
+.modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--border-soft);
+}
+
+.modalTitle {
+    font-size: 1.2rem;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.modalCloseButton {
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 0 5px;
+    line-height: 1;
+}
+
+.modalCloseButton:hover {
+    color: var(--text-primary);
+}
+
+.modalBody {
+    padding: 20px;
+    overflow-y: auto;
+    /* Scroll para conteúdo extenso */
+    flex-grow: 1;
+}
+
+.detailGrid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 8px 15px;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+}
+
+.detailLabel {
+    color: var(--text-secondary);
+    font-weight: 500;
+    white-space: nowrap;
+    padding-right: 10px;
+}
+
+.detailGrid span {
+    color: var(--text-primary);
+    word-break: break-word;
+}
+
+.fullWidthDetailSection {
+    margin-top: 15px;
+}
+
+.detailLabelFull {
+    display: block;
+    color: var(--text-secondary);
+    font-weight: 500;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+}
+
+.detailValueFullWrapped {
+    color: var(--text-primary);
+    word-break: break-all;
+    white-space: pre-wrap;
+    background-color: var(--background-body);
+    padding: 8px 10px;
+    border-radius: 4px;
+    font-family: var(--font-family-monospace);
+    font-size: 0.85rem;
+    max-height: 150px;
+    /* Limita altura para linhas de comando muito grandes */
+    overflow-y: auto;
+    border: 1px solid var(--border-soft);
+}
