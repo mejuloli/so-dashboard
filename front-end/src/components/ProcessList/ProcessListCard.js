@@ -1,13 +1,12 @@
 // so-dashboard/front-end/src/components/ProcessList/ProcessListCard.js
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import Card from '../Card/Card';
-// Removido: import ProcessDetailTooltip from './ProcessDetailTooltip'; 
+import ProcessDetailModal from './ProcessDetailModal';
 import styles from './ProcessListCard.module.css';
 
 const INITIAL_ITEMS_TO_SHOW = 10;
 const ITEMS_PER_LOAD_MORE = 10;
 
-// Adicionando onProcessSelect como prop
 const ProcessListCard = ({ onProcessSelect }) => {
     const [allProcesses, setAllProcesses] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -16,8 +15,8 @@ const ProcessListCard = ({ onProcessSelect }) => {
     const [showAll, setShowAll] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [sortConfig, setSortConfig] = useState({ key: 'pid', direction: 'ascending' });
-
-    // Removido estado de selectedProcess e tooltipPosition
+    // selectedProcess e tooltipAnchorElement não são mais necessários aqui se o modal é gerenciado pelo App.js
+    // Mas se onProcessSelect é usado para abrir o modal no App.js, está correto.
 
     const fetchData = useCallback(async () => {
         try {
@@ -54,10 +53,19 @@ const ProcessListCard = ({ onProcessSelect }) => {
     const handleLoadMore = () => { setVisibleCount(prevCount => Math.min(prevCount + ITEMS_PER_LOAD_MORE, processedList.length)); };
     const toggleShowAll = () => { const newShowAllState = !showAll; setShowAll(newShowAllState); if (!newShowAllState) { setVisibleCount(INITIAL_ITEMS_TO_SHOW); } };
     const requestSort = (key) => { let direction = 'ascending'; if (sortConfig.key === key && sortConfig.direction === 'ascending') { direction = 'descending'; } else if (sortConfig.key === key && sortConfig.direction === 'descending') { direction = 'ascending'; } setSortConfig({ key, direction }); };
-    const getSortIndicator = (key) => sortConfig.key === key ? (sortConfig.direction === 'ascending' ? ' ▲' : ' ▼') : '';
+
+    // Modificado para retornar um JSX com o span para o indicador
+    const getSortIndicator = (key) => {
+        if (sortConfig.key === key) {
+            return <span className={styles.sortIndicator}>{sortConfig.direction === 'ascending' ? '▲' : '▼'}</span>;
+        }
+        return <span className={styles.sortIndicator}></span>; // Retorna um span vazio para manter o espaço
+    };
 
     const handleProcessRowClick = (process) => {
-        onProcessSelect(process); // Chama a função passada por prop
+        if (onProcessSelect) { // Verifica se a prop foi passada
+            onProcessSelect(process);
+        }
     };
 
     const totalProcessesCountSystem = allProcesses.length;
@@ -68,7 +76,6 @@ const ProcessListCard = ({ onProcessSelect }) => {
     if (error && allProcesses.length === 0) return <Card title="Lista de Processos"><p className={styles.errorText}>Erro ao carregar: {error}</p></Card>;
 
     return (
-        // Removido o div wrapper com ref, pois o modal será gerenciado pelo App/Layout
         <Card title="Lista de Processos" className={styles.processListCard} >
             <div className={styles.controlsContainer}>
                 <div className={styles.filterContainer}>
@@ -98,7 +105,7 @@ const ProcessListCard = ({ onProcessSelect }) => {
                     </thead>
                     <tbody>
                         {displayedProcesses.map(proc => (
-                            <tr key={proc.pid} onClick={() => handleProcessRowClick(proc)} className={styles.clickableRow}> {/* Passa apenas 'proc' */}
+                            <tr key={proc.pid} onClick={() => handleProcessRowClick(proc)} className={styles.clickableRow}>
                                 <td>{proc.pid}</td><td>{proc.name}</td><td>{proc.user_name}</td><td>{proc.status}</td>
                                 <td>{(proc.cpu_percent || 0).toFixed(1)}</td><td>{(proc.memory_rss_mb || 0).toFixed(1)}</td><td>{proc.threads}</td>
                                 <td>{proc.ppid}</td><td>{proc.priority}</td><td>{proc.nice}</td>
@@ -111,7 +118,6 @@ const ProcessListCard = ({ onProcessSelect }) => {
             {!showAll && visibleCount < filteredProcessCount && (<button onClick={handleLoadMore} className={styles.loadMoreButton}> Ver Mais ({filteredProcessCount - visibleCount > 0 ? filteredProcessCount - visibleCount : 0} restantes) </button>)}
             <div className={styles.summaryStats}> <span>Exibindo: {displayedProcesses.length} de {filteredProcessCount} (Filtrados)</span> <span>Total no Sistema: {totalProcessesCountSystem} Processos, {totalThreadsCountSystem} Threads</span> </div>
         </Card>
-        // Removido o <ProcessDetailTooltip /> daqui
     );
 };
 export default ProcessListCard;

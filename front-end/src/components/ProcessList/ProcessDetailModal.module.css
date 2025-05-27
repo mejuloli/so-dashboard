@@ -5,55 +5,65 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.6);
-    /* Fundo semi-transparente */
+    background-color: rgba(0, 0, 0, 0.65);
+    /* Um pouco mais escuro para mais foco no modal */
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1000;
-    /* Acima de outros conteúdos */
-    padding: 20px;
-    /* Para não colar nas bordas em telas pequenas */
+    padding: 15px;
+    /* Reduzido padding do overlay */
 }
 
 .modalContent {
-    /* .dashboard-card já aplica fundo, borda arredondada, padding base e sombra */
+    /* .dashboard-card já aplica fundo, borda arredondada, sombra */
+    /* Vamos controlar o padding interno diretamente */
     padding: 0 !important;
-    /* Remover padding do .dashboard-card para controle total aqui */
     width: 100%;
-    max-width: 650px;
-    /* Largura máxima do modal */
-    max-height: 90vh;
-    /* Altura máxima, permite scroll interno se necessário */
+    max-width: 550px;
+    /* <<<<<<<<<<<< REDUZIDO (era 650px) */
+    max-height: 85vh;
+    /* <<<<<<<<<<<< REDUZIDO (era 90vh) */
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    /* Para que o border-radius funcione com o conteúdo de scroll */
 }
 
 .modalHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 20px;
+    padding: 12px 18px;
+    /* <<<<<<<<<<<< PADDING AJUSTADO */
     border-bottom: 1px solid var(--border-soft);
 }
 
 .modalTitle {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
+    /* <<<<<<<<<<<< REDUZIDO (era 1.2rem) */
     color: var(--text-primary);
     margin: 0;
+    /* Adicionar ellipsis para títulos muito longos */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 10px;
+    /* Espaço para o botão de fechar não sobrepor o título */
 }
 
 .modalCloseButton {
     background: none;
     border: none;
-    font-size: 1.8rem;
+    font-size: 1.6rem;
+    /* <<<<<<<<<<<< REDUZIDO (era 1.8rem) */
     font-weight: bold;
     color: var(--text-secondary);
     cursor: pointer;
-    padding: 0 5px;
+    padding: 0 3px;
+    /* Ajustado */
     line-height: 1;
+    margin-left: 10px;
+    /* Garante espaço do título */
 }
 
 .modalCloseButton:hover {
@@ -61,25 +71,29 @@
 }
 
 .modalBody {
-    padding: 20px;
+    padding: 15px 18px;
+    /* <<<<<<<<<<<< PADDING AJUSTADO */
     overflow-y: auto;
-    /* Scroll para conteúdo extenso */
     flex-grow: 1;
 }
 
 .detailGrid {
     display: grid;
     grid-template-columns: auto 1fr;
-    gap: 8px 15px;
-    font-size: 0.9rem;
-    margin-bottom: 15px;
+    gap: 6px 12px;
+    /* <<<<<<<<<<<< GAP AJUSTADO */
+    font-size: 0.85rem;
+    /* <<<<<<<<<<<< REDUZIDO (era 0.9rem) */
+    margin-bottom: 12px;
+    /* Reduzido */
 }
 
 .detailLabel {
     color: var(--text-secondary);
     font-weight: 500;
     white-space: nowrap;
-    padding-right: 10px;
+    padding-right: 8px;
+    /* Reduzido */
 }
 
 .detailGrid span {
@@ -88,15 +102,18 @@
 }
 
 .fullWidthDetailSection {
-    margin-top: 15px;
+    margin-top: 12px;
+    /* Reduzido */
 }
 
 .detailLabelFull {
     display: block;
     color: var(--text-secondary);
     font-weight: 500;
-    margin-bottom: 5px;
-    font-size: 0.9rem;
+    margin-bottom: 4px;
+    /* Reduzido */
+    font-size: 0.85rem;
+    /* Consistente com .detailGrid */
 }
 
 .detailValueFullWrapped {
@@ -104,12 +121,11 @@
     word-break: break-all;
     white-space: pre-wrap;
     background-color: var(--background-body);
-    padding: 8px 10px;
-    border-radius: 4px;
+    padding: 6px 8px;
+    border-radius: 3px;
     font-family: var(--font-family-monospace);
-    font-size: 0.85rem;
-    max-height: 150px;
-    /* Limita altura para linhas de comando muito grandes */
+    font-size: 0.8rem;
+    max-height: 100px;
     overflow-y: auto;
     border: 1px solid var(--border-soft);
 }
