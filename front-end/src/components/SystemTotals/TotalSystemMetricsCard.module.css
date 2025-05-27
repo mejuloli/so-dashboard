@@ -1,0 +1,39 @@
+/* so-dashboard/front-end/src/components/SystemTotals/TotalSystemMetricsCard.module.css */
+.systemTotalsCard {
+    /* Estilos específicos se necessário */
+}
+
+.metricDisplay {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.metricItem {
+    /* flex: 1; */
+}
+
+.metricValue {
+    display: block;
+    font-size: 1.8rem;
+    font-weight: 300;
+    color: var(--text-primary);
+}
+
+.metricLabel {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+}
+
+.chartContainer {
+    width: 100%;
+    height: 150px;
+    /* Altura menor para este gráfico */
+}
+
+.loadingText,
+.errorText {
+    /* ... (como nos outros cards) ... */
+}
