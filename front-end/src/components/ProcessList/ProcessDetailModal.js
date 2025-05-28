@@ -24,7 +24,7 @@ const ProcessDetailModal = ({ process, onClose }) => {
 
     const handleModalContentClick = (e) => { e.stopPropagation(); };
 
-    // Assumindo que o backend agora envia 'memory_details_kb' e 'threads_detailed_info'
+    // o backend envia 'memory_details_kb' e 'threads_detailed_info'
     const memDetails = process.memory_details_kb || {};
     const detailedThreads = process.threads_detailed_info || [];
 
@@ -42,10 +42,10 @@ const ProcessDetailModal = ({ process, onClose }) => {
                         <span className={styles.detailLabel}>Usuário:</span><span>{process.user_name || 'N/A'}</span>
                         <span className={styles.detailLabel}>CPU %:</span><span>{(process.cpu_percent || 0).toFixed(1)}</span>
                         <span className={styles.detailLabel}>Mem. RSS:</span><span>{formatKbToMbOrGb(process.memory_rss_mb * 1024) || 'N/A'}</span> {/* Convertendo MB para KB para a função */}
-                        <span className={styles.detailLabel}>Criado em (Início):</span><span>{formatIsoDate(process.create_time_iso)}</span>
+                        <span className={styles.detailLabel}>Criado em:</span><span>{formatIsoDate(process.create_time_iso)}</span>
                     </div>
                     <div className={styles.fullWidthDetailSectionCompact}>
-                        <span className={styles.detailLabelFull}>Comando (Linha Completa):</span>
+                        <span className={styles.detailLabelFull}>Comando:</span>
                         <p className={styles.detailValueFullWrappedSmall}>{process.command_line || 'N/A'}</p>
                     </div>
 
@@ -75,7 +75,7 @@ const ProcessDetailModal = ({ process, onClose }) => {
                                             <th>TID</th>
                                             <th>Nome da Thread</th>
                                             <th>Estado</th>
-                                            {/* <th>CPU %</th>  Pode ser adicionado se o backend fornecer */}
+                                            {/* <th>CPU %</th>  pode ser adicionado também se for pertinente */}
                                         </tr>
                                     </thead>
                                     <tbody>

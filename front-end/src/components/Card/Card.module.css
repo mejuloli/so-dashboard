@@ -1,8 +1,4 @@
 /* so-dashboard/front-end/src/components/Card/Card.module.css */
-.cardContent {
-    /* Estilos específicos para o conteúdo do card, se necessário */
-}
-
 .cardIcon {
     margin-right: 10px;
     display: flex;

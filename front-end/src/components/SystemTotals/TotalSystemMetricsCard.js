@@ -6,11 +6,11 @@ import styles from './TotalSystemMetricsCard.module.css';
 
 const MAX_HISTORY_POINTS_TOTALS = 30;
 
-// Componente reutilizável para cada métrica total com seu gráfico
+// componente reutilizável para cada métrica total com seu gráfico
 const SingleTotalMetricCardInternal = ({ title, value, dataHistory, dataKey, lineColor, unit = '' }) => {
-    // Encontrar o valor máximo no histórico para definir o domínio do eixo Y
+    // encontra o valor máximo no histórico para definir o domínio do eixo Y
     const yMax = dataHistory.length > 0 ? Math.max(...dataHistory.map(p => p[dataKey] || 0)) : 0;
-    const yDomain = [0, Math.max(10, Math.ceil(yMax * 1.1))]; // Pelo menos 10, ou 10% acima do max
+    const yDomain = [0, Math.max(10, Math.ceil(yMax * 1.1))]; // pelo menos 10, ou 10% acima do max
 
     return (
         <Card title={title} className={styles.singleTotalCard}>
@@ -19,17 +19,17 @@ const SingleTotalMetricCardInternal = ({ title, value, dataHistory, dataKey, lin
             </div>
             {dataHistory && dataHistory.length > 0 && (
                 <div className={styles.miniChartContainer}>
-                    <ResponsiveContainer width="100%" height={100}> {/* Aumentada altura do gráfico */}
-                        <LineChart data={dataHistory} margin={{ top: 5, right: 15, left: -15, bottom: 5 }}> {/* Ajuste de margens */}
+                    <ResponsiveContainer width="100%" height={100}> {/* altura do gráfico */}
+                        <LineChart data={dataHistory} margin={{ top: 5, right: 15, left: 15, bottom: 5 }}> {/* ajuste de margens */}
                             <CartesianGrid strokeDasharray="3 3" stroke="var(--border-soft)" horizontal={true} vertical={false} />
-                            <XAxis dataKey="time" stroke="var(--text-secondary)" fontSize="0.7rem" tick={{ fill: 'var(--text-secondary)' }} tickFormatter={(tick) => tick.slice(-5)} /> {/* Mostra apenas HH:MM */}
+                            <XAxis dataKey="time" stroke="var(--text-secondary)" fontSize="0.7rem" tick={{ fill: 'var(--text-secondary)' }} tickFormatter={(tick) => tick.slice(-5)} /> {/* mostra apenas HH:MM */}
                             <YAxis
                                 stroke={lineColor || 'var(--text-secondary)'}
                                 fontSize="0.7rem"
                                 tick={{ fill: lineColor || 'var(--text-secondary)' }}
                                 domain={yDomain}
                                 allowDecimals={false}
-                                width={35} // Espaço para os números do eixo Y
+                                width={35} // espaço para os números do eixo Y
                             />
                             <Tooltip
                                 formatter={(val) => [`${val}${unit}`, title]}
@@ -47,7 +47,7 @@ const SingleTotalMetricCardInternal = ({ title, value, dataHistory, dataKey, lin
     );
 };
 
-// Componente Wrapper que busca os dados e renderiza os dois cards de totais
+// componente wrapper que busca os dados e renderiza os dois cards de totais
 const SystemSummaryWrapper = () => {
     const [totals, setTotals] = useState({ totalProcesses: 0, totalThreads: 0, processHistory: [], threadHistory: [] });
     const [loading, setLoading] = useState(true);
@@ -59,18 +59,18 @@ const SystemSummaryWrapper = () => {
             const cpuResponse = await fetch('http://localhost:5000/api/cpu');
             if (cpuResponse.ok) {
                 const cpuData = await cpuResponse.json();
-                // Assumindo que o backend (controller._update_data_cache) agora coloca os totais em /api/cpu
+                // o backend (controller._update_data_cache) coloca os totais em /api/cpu
                 if (cpuData.total_processes !== undefined && cpuData.total_threads !== undefined) {
                     currentTotalProcesses = cpuData.total_processes;
                     currentTotalThreads = cpuData.total_threads;
-                } else { // Fallback se /api/cpu não tiver os totais
+                } else { // fallback se /api/cpu não tiver os totais
                     const procResponse = await fetch('http://localhost:5000/api/processes');
                     if (!procResponse.ok) throw new Error(`Erro Processos: ${procResponse.statusText}`);
                     const processesData = await procResponse.json();
                     currentTotalProcesses = processesData.length;
                     currentTotalThreads = processesData.reduce((sum, p) => sum + (parseInt(p.threads) || 0), 0);
                 }
-            } else { /* ... (mesmo fallback de antes) ... */
+            } else {
                 const procResponse = await fetch('http://localhost:5000/api/processes');
                 if (!procResponse.ok) throw new Error(`Erro Processos: ${procResponse.statusText}`);
                 const processesData = await procResponse.json();

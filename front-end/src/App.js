@@ -6,7 +6,6 @@ import MemoryUsageCard from './components/MemoryUsage/MemoryUsageCard';
 import ProcessListCard from './components/ProcessList/ProcessListCard';
 import ProcessDetailModal from './components/ProcessList/ProcessDetailModal';
 import SystemSummaryCards from './components/SystemTotals/TotalSystemMetricsCard'; // Importa o wrapper
-// Removido: import ProcessStatusDistributionCard from './components/ProcessStatus/ProcessStatusDistributionCard';
 import styles from './App.module.css';
 
 function App() {
@@ -20,8 +19,8 @@ function App() {
         <CpuUsageCard />
         <MemoryUsageCard />
       </div>
-      <div className={styles.summaryCardsContainer}> {/* Novo container para os cards de totais */}
-        <SystemSummaryCards /> {/* Renderiza os dois cards de totais */}
+      <div className={styles.summaryCardsContainer}> {/* container para os cards de totais */}
+        <SystemSummaryCards /> {/* renderiza os dois cards de totais */}
       </div>
       <ProcessListCard onProcessSelect={handleProcessSelect} />
       <ProcessDetailModal process={selectedProcessForDetail} onClose={handleCloseDetailModal} />

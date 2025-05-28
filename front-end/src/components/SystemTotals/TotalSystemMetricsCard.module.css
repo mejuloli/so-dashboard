@@ -1,10 +1,10 @@
 /* so-dashboard/front-end/src/components/SystemTotals/TotalSystemMetricsCard.module.css */
 .singleTotalCard {
-    /* Estilo para o Card que envolve cada métrica individual */
+    /* estilo para o Card que envolve cada métrica individual */
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    /* Para empurrar o gráfico para baixo se houver espaço */
+    /* para empurrar o gráfico para baixo se houver espaço */
 }
 
 .metricItemStandalone {
@@ -13,7 +13,6 @@
     align-items: center;
     justify-content: center;
     padding: 10px;
-    /* Reduzido padding */
     text-align: center;
 }
 
@@ -21,14 +20,13 @@
     display: block;
     font-size: 2rem;
     font-weight: 300;
-    /* Mais leve */
     color: var(--text-primary);
     margin-bottom: 2px;
 }
 
 .metricLabel {
-    /* O título do Card já serve como label principal */
-    /* Este pode ser removido ou usado para sub-labels se necessário */
+    /* o título do Card já serve como label principal */
+    /* pode ser removido ou usado para sub-labels se necessário */
     font-size: 0.8rem;
     color: var(--text-secondary);
     text-transform: uppercase;
@@ -38,9 +36,9 @@
 .miniChartContainer {
     width: 100%;
     height: 80px;
-    /* Altura para o mini gráfico de linha */
+    /* altura para o mini gráfico de linha */
     margin-top: 10px;
-    /* Espaço entre o número e o gráfico */
+    /* espaço entre o número e o gráfico */
 }
 
 .loadingText,

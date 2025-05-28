@@ -24,7 +24,7 @@ const CpuUsageCard = () => {
 
     useEffect(() => {
         if (cpuState.cores && cpuState.cores.length > 0) {
-            const currentVisibility = { ...lineVisibility }; // Começa com o estado atual
+            const currentVisibility = { ...lineVisibility }; // começa com o estado atual
             let visibilityChanged = !currentVisibility.hasOwnProperty('overall');
             if (visibilityChanged) currentVisibility.overall = true;
 
@@ -99,7 +99,7 @@ const CpuUsageCard = () => {
             <div className={styles.chartTitle}>Histórico de Uso de CPU (%)</div>
             <div className={styles.chartContainer}>
                 <ResponsiveContainer width="100%" height={250}>
-                    <LineChart data={cpuState.history} margin={{ top: 5, right: 15, left: 15, bottom: 40 }}>
+                    <LineChart data={cpuState.history} margin={{ top: 5, right: 20, left: 20, bottom: 40 }}>
                         <CartesianGrid strokeDasharray="3 3" stroke="var(--border-soft)" />
                         <XAxis dataKey="time" stroke="var(--text-secondary)" fontSize="0.8rem" tick={{ fill: 'var(--text-secondary)' }} />
                         <YAxis stroke="var(--text-secondary)" fontSize="0.8rem" unit="%" domain={[0, 100]} tick={{ fill: 'var(--text-secondary)' }} width={35} />

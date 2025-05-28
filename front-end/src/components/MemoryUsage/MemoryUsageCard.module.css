@@ -1,5 +1,4 @@
 /* so-dashboard/front-end/src/components/MemoryUsage/MemoryUsageCard.module.css */
-/* so-dashboard/front-end/src/components/MemoryUsage/MemoryUsageCard.module.css */
 .memoryTypeSection {
     margin-bottom: 20px;
 }
@@ -19,12 +18,10 @@
 }
 
 .memoryInfoBlock {
-    /* NOVO para agrupar valores antes da barra */
     margin-bottom: 8px;
 }
 
 .memoryValueRow {
-    /* NOVO */
     display: flex;
     justify-content: space-between;
     font-size: 0.9rem;
@@ -41,7 +38,6 @@
 }
 
 .memoryPercentRow {
-    /* NOVO para as porcentagens */
     display: flex;
     justify-content: space-between;
     font-size: 0.75rem;
@@ -62,7 +58,6 @@
 .chartContainer {
     width: 100%;
     height: 180px;
-    /* Reduzido para dar mais espaço aos dados acima */
 }
 
 .loadingText,

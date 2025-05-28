@@ -1,13 +1,14 @@
 /* so-dashboard/front-end/src/App.module.css */
 .topCardsContainer {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 450px), 1fr)); 
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 450px), 1fr));
   gap: var(--padding-main);
 }
 
-.summaryCardsContainer { /* NOVO para os cards de totais */
+.summaryCardsContainer {
+  /* cards de totais */
   display: grid;
-  /* Cria duas colunas se houver espaço, senão uma */
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); 
+  /* cria duas colunas se houver espaço, senão uma */
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
   gap: var(--padding-main);
 }

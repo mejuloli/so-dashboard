@@ -85,7 +85,6 @@
 }
 
 .sectionTitle {
-    /* NOVO ou modificado do .threadsSectionTitle */
     font-size: 1rem;
     color: var(--text-primary);
     /* Destaque maior para títulos de seção */
@@ -110,7 +109,6 @@
 }
 
 .fullWidthDetailSectionCompact {
-    /* NOVO para Comando */
     margin-top: 10px;
     margin-bottom: 10px;
 }
@@ -156,7 +154,6 @@
 }
 
 .detailValueFullWrappedSmall {
-    /* NOVO para Comando, se quiser menos altura */
     color: var(--text-primary);
     word-break: break-all;
     white-space: pre-wrap;

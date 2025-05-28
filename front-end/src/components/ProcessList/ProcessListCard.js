@@ -1,7 +1,6 @@
 // so-dashboard/front-end/src/components/ProcessList/ProcessListCard.js
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import Card from '../Card/Card';
-import ProcessDetailModal from './ProcessDetailModal';
 import styles from './ProcessListCard.module.css';
 
 const INITIAL_ITEMS_TO_SHOW = 10;
@@ -16,7 +15,7 @@ const ProcessListCard = ({ onProcessSelect }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [sortConfig, setSortConfig] = useState({ key: 'pid', direction: 'ascending' });
 
-    const fetchData = useCallback(async () => { /* ... (lógica de fetch como antes, garantindo que todos os campos para o modal são parseados) ... */
+    const fetchData = useCallback(async () => {
         try {
             const response = await fetch('http://localhost:5000/api/processes');
             if (!response.ok) throw new Error(`Erro HTTP: ${response.status} - ${response.statusText}`);
@@ -27,25 +26,26 @@ const ProcessListCard = ({ onProcessSelect }) => {
                 ppid: parseInt(proc.ppid || 0), nice: parseInt(proc.nice || 0), priority: parseInt(proc.priority || 0),
                 name: proc.name || "N/A", user_name: proc.user_name || "N/A", status: proc.status || "N/A",
                 create_time_iso: proc.create_time_iso || null, executable_path: proc.executable_path || null, command_line: proc.command_line || null,
-                memory_details_kb: proc.memory_details_kb || {}, threads_detailed_info: proc.threads_detailed_info || [],
+                memory_details_kb: proc.memory_details_kb || {},
+                threads_detailed_info: proc.threads_detailed_info || [],
             }));
             setAllProcesses(data); setError(null);
         } catch (e) {
-            console.error("Erro processos:", e); setError(e.message);
+            console.error("Erro ao buscar lista de processos:", e); setError(e.message);
         } finally { if (loading) setLoading(false); }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [loading]);
 
     useEffect(() => { fetchData(); const intervalId = setInterval(fetchData, 5000); return () => clearInterval(intervalId); }, [fetchData]);
 
-    const processedList = useMemo(() => { /* ... (lógica de filtro e sort como antes) ... */
+    const processedList = useMemo(() => {
         let tempProcesses = [...allProcesses];
         if (searchTerm) { const lowerSearchTerm = searchTerm.toLowerCase(); tempProcesses = tempProcesses.filter(proc => (proc.name && proc.name.toLowerCase().includes(lowerSearchTerm)) || String(proc.pid).includes(searchTerm) || (proc.user_name && proc.user_name.toLowerCase().includes(lowerSearchTerm))); }
         if (sortConfig.key !== null) { tempProcesses.sort((a, b) => { const valA = a[sortConfig.key]; const valB = b[sortConfig.key]; if (typeof valA === 'string' && typeof valB === 'string') { return sortConfig.direction === 'ascending' ? valA.localeCompare(valB) : valB.localeCompare(valA); } if (valA < valB) return sortConfig.direction === 'ascending' ? -1 : 1; if (valA > valB) return sortConfig.direction === 'ascending' ? 1 : -1; return 0; }); }
         return tempProcesses;
     }, [allProcesses, searchTerm, sortConfig]);
 
-    const displayedProcesses = useMemo(() => { /* ... (lógica de paginação como antes) ... */
+    const displayedProcesses = useMemo(() => {
         if (showAll) { return processedList; } return processedList.slice(0, visibleCount);
     }, [processedList, visibleCount, showAll]);
 
@@ -55,13 +55,12 @@ const ProcessListCard = ({ onProcessSelect }) => {
     const getSortIndicator = (key) => sortConfig.key === key ? (sortConfig.direction === 'ascending' ? ' ▲' : ' ▼') : '';
     const handleProcessRowClick = (process) => { onProcessSelect(process); };
 
-    const totalProcessesCountSystem = allProcesses.length; // Será usado pelo TotalSystemMetricsCard
-    // const totalThreadsCountSystem = allProcesses.reduce((sum, p) => sum + (p.threads || 0), 0); // Também para TotalSystemMetricsCard
-
+    const totalProcessesCountSystem = allProcesses.length;
+    const totalThreadsCountSystem = allProcesses.reduce((sum, p) => sum + (p.threads || 0), 0);
     const filteredProcessCount = processedList.length;
 
-    if (loading && allProcesses.length === 0) return <Card title="Lista de Processos"><p className={styles.loadingText}>Carregando...</p></Card>;
-    if (error && allProcesses.length === 0) return <Card title="Lista de Processos"><p className={styles.errorText}>Erro: {error}</p></Card>;
+    if (loading && allProcesses.length === 0) return <Card title="Lista de Processos"><p className={styles.loadingText}>Carregando processos...</p></Card>;
+    if (error && allProcesses.length === 0) return <Card title="Lista de Processos"><p className={styles.errorText}>Erro ao carregar: {error}</p></Card>;
 
     return (
         <Card title="Lista de Processos" className={styles.processListCard} >
@@ -72,7 +71,7 @@ const ProcessListCard = ({ onProcessSelect }) => {
             <div className={styles.tableContainer}>
                 <table>
                     <thead>
-                        <tr> {/* PID, User, CPU (%), Memória (%), CMD */}
+                        <tr>
                             <th onClick={() => requestSort('pid')} className={styles.colPid}>PID{getSortIndicator('pid')}</th>
                             <th onClick={() => requestSort('user_name')} className={styles.colUser}>User{getSortIndicator('user_name')}</th>
                             <th onClick={() => requestSort('cpu_percent')} className={styles.colCpu}>CPU %{getSortIndicator('cpu_percent')}</th>

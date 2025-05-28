@@ -1,6 +1,5 @@
 /* so-dashboard/front-end/src/index.css (VERSÃO MINIMALISTA) */
 :root {
-  /* Tema Escuro Minimalista (Inspirado no WhatsApp Web Dark) */
   --background-body: #111b21;
   --background-card: #202c33;
 
@@ -10,7 +9,7 @@
   --border-soft: rgba(134, 150, 160, 0.15);
   --border-medium: rgba(134, 150, 160, 0.3);
 
-  /* Cores para Gráficos */
+  /* cores para os gráficos */
   --chart-color-cpu-core1: #c8ce13;
   --chart-color-cpu-core2: #349e97;
   --chart-color-cpu-core3: #de1a72;
