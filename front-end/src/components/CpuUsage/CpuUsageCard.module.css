@@ -1,17 +1,17 @@
 /* so-dashboard/front-end/src/components/CpuUsage/CpuUsageCard.module.css */
 .cpuSection {
-    margin-bottom: 16px;
+    margin-bottom: 12px;
 }
 
 .labelWithValue {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
 }
 
 .labelText {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: var(--text-secondary);
     white-space: nowrap;
     margin-right: 8px;
@@ -19,11 +19,37 @@
 }
 
 .valueText {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 500;
     color: var(--text-primary);
     text-align: right;
-    min-width: 45px;
+    min-width: 40px;
+}
+
+.cpuOverallStats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.cpuOverallItem {
+    display: flex;
+    flex-direction: column;
+}
+
+.overallLabel {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+}
+
+.overallValue {
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: var(--text-primary);
+    margin-bottom: 6px;
 }
 
 .chartTitle {
@@ -51,5 +77,4 @@
 
 .errorText {
     color: var(--chart-color-cpu-core6);
-    /* Cor vermelha para erro */
 }

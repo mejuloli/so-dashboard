@@ -6,24 +6,18 @@
     right: 0;
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.65);
-    /* Um pouco mais escuro para mais foco no modal */
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1000;
     padding: 15px;
-    /* Reduzido padding do overlay */
 }
 
 .modalContent {
-    /* .dashboard-card já aplica fundo, borda arredondada, sombra */
-    /* Vamos controlar o padding interno diretamente */
     padding: 0 !important;
     width: 100%;
     max-width: 550px;
-    /* <<<<<<<<<<<< REDUZIDO (era 650px) */
     max-height: 85vh;
-    /* <<<<<<<<<<<< REDUZIDO (era 90vh) */
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -34,36 +28,29 @@
     justify-content: space-between;
     align-items: center;
     padding: 12px 18px;
-    /* <<<<<<<<<<<< PADDING AJUSTADO */
     border-bottom: 1px solid var(--border-soft);
 }
 
 .modalTitle {
     font-size: 1.1rem;
-    /* <<<<<<<<<<<< REDUZIDO (era 1.2rem) */
     color: var(--text-primary);
     margin: 0;
-    /* Adicionar ellipsis para títulos muito longos */
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     padding-right: 10px;
-    /* Espaço para o botão de fechar não sobrepor o título */
 }
 
 .modalCloseButton {
     background: none;
     border: none;
     font-size: 1.6rem;
-    /* <<<<<<<<<<<< REDUZIDO (era 1.8rem) */
     font-weight: bold;
     color: var(--text-secondary);
     cursor: pointer;
     padding: 0 3px;
-    /* Ajustado */
     line-height: 1;
     margin-left: 10px;
-    /* Garante espaço do título */
 }
 
 .modalCloseButton:hover {
@@ -72,20 +59,60 @@
 
 .modalBody {
     padding: 15px 18px;
-    /* <<<<<<<<<<<< PADDING AJUSTADO */
     overflow-y: auto;
     flex-grow: 1;
+    scrollbar-width: auto;
+    scrollbar-color: var(--text-secondary) var(--background-body);
+}
+
+.modalBody::-webkit-scrollbar {
+    width: 12px;
+}
+
+.modalBody::-webkit-scrollbar-track {
+    background: var(--background-body);
+    border-radius: 6px;
+}
+
+.modalBody::-webkit-scrollbar-thumb {
+    background-color: var(--text-secondary);
+    border-radius: 6px;
+    border: 3px solid var(--background-body);
+}
+
+.modalBody::-webkit-scrollbar-thumb:hover {
+    background-color: var(--text-primary);
+}
+
+.sectionTitle {
+    /* NOVO ou modificado do .threadsSectionTitle */
+    font-size: 1rem;
+    color: var(--text-primary);
+    /* Destaque maior para títulos de seção */
+    margin-top: 20px;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid var(--border-soft);
+    font-weight: 500;
+}
+
+.modalBody .sectionTitle:first-of-type {
+    margin-top: 0;
+    /* Remove margem do primeiro título de seção */
 }
 
 .detailGrid {
     display: grid;
     grid-template-columns: auto 1fr;
     gap: 6px 12px;
-    /* <<<<<<<<<<<< GAP AJUSTADO */
     font-size: 0.85rem;
-    /* <<<<<<<<<<<< REDUZIDO (era 0.9rem) */
     margin-bottom: 12px;
-    /* Reduzido */
+}
+
+.fullWidthDetailSectionCompact {
+    /* NOVO para Comando */
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .detailLabel {
@@ -93,7 +120,6 @@
     font-weight: 500;
     white-space: nowrap;
     padding-right: 8px;
-    /* Reduzido */
 }
 
 .detailGrid span {
@@ -103,7 +129,6 @@
 
 .fullWidthDetailSection {
     margin-top: 12px;
-    /* Reduzido */
 }
 
 .detailLabelFull {
@@ -111,9 +136,7 @@
     color: var(--text-secondary);
     font-weight: 500;
     margin-bottom: 4px;
-    /* Reduzido */
     font-size: 0.85rem;
-    /* Consistente com .detailGrid */
 }
 
 .detailValueFullWrapped {
@@ -128,4 +151,141 @@
     max-height: 100px;
     overflow-y: auto;
     border: 1px solid var(--border-soft);
+    scrollbar-width: auto;
+    scrollbar-color: var(--text-secondary) var(--background-body);
+}
+
+.detailValueFullWrappedSmall {
+    /* NOVO para Comando, se quiser menos altura */
+    color: var(--text-primary);
+    word-break: break-all;
+    white-space: pre-wrap;
+    background-color: var(--background-body);
+    padding: 6px 8px;
+    border-radius: 3px;
+    font-family: var(--font-family-monospace);
+    font-size: 0.8rem;
+    max-height: 60px;
+    /* Menor altura */
+    overflow-y: auto;
+    border: 1px solid var(--border-soft);
+    scrollbar-width: auto;
+    scrollbar-color: var(--text-secondary) var(--background-body);
+}
+
+.detailValueFullWrapped::-webkit-scrollbar {
+    width: 12px;
+}
+
+.detailValueFullWrapped::-webkit-scrollbar-track {
+    background: var(--background-body);
+    border-radius: 6px;
+}
+
+.detailValueFullWrapped::-webkit-scrollbar-thumb {
+    background-color: var(--text-secondary);
+    border-radius: 6px;
+    border: 3px solid var(--background-body);
+}
+
+.detailValueFullWrapped::-webkit-scrollbar-thumb:hover {
+    background-color: var(--text-primary);
+}
+
+.detailValueFullWrappedSmall::-webkit-scrollbar {
+    width: 12px;
+}
+
+.detailValueFullWrappedSmall::-webkit-scrollbar-track {
+    background: var(--background-body);
+    border-radius: 6px;
+}
+
+.detailValueFullWrappedSmall::-webkit-scrollbar-thumb {
+    background-color: var(--text-secondary);
+    border-radius: 6px;
+    border: 3px solid var(--background-body);
+}
+
+.detailValueFullWrappedSmall::-webkit-scrollbar-thumb:hover {
+    background-color: var(--text-primary);
+}
+
+.threadsSection {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid var(--border-medium);
+}
+
+.threadsSectionTitle {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.threadsTableContainer {
+    max-height: 180px;
+    overflow-y: auto;
+    border: 1px solid var(--border-soft);
+    border-radius: 4px;
+    scrollbar-width: auto;
+    scrollbar-color: var(--text-secondary) var(--background-body);
+}
+
+.threadsTableContainer::-webkit-scrollbar {
+    width: 12px;
+}
+
+.threadsTableContainer::-webkit-scrollbar-track {
+    background: var(--background-body);
+    border-radius: 6px;
+}
+
+.threadsTableContainer::-webkit-scrollbar-thumb {
+    background-color: var(--text-secondary);
+    border-radius: 6px;
+    border: 3px solid var(--background-body);
+}
+
+.threadsTableContainer::-webkit-scrollbar-thumb:hover {
+    background-color: var(--text-primary);
+}
+
+.threadsTableContainer table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+}
+
+.threadsTableContainer th,
+.threadsTableContainer td {
+    padding: 6px 8px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-soft);
+    white-space: nowrap;
+}
+
+.threadsTableContainer th {
+    background-color: var(--background-body);
+    color: var(--text-secondary);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.threadsTableContainer tr:last-child td {
+    border-bottom: none;
+}
+
+.threadsTableContainer tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+.noThreadsDetailText {
+    font-style: italic;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    padding: 10px 0;
 }

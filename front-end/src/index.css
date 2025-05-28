@@ -2,20 +2,15 @@
 :root {
   /* Tema Escuro Minimalista (Inspirado no WhatsApp Web Dark) */
   --background-body: #111b21;
-  /* Fundo geral bem escuro */
   --background-card: #202c33;
-  /* Fundo dos cards/elementos elevados */
 
   --text-primary: #e9edef;
-  /* Texto principal (branco/cinza muito claro) */
   --text-secondary: #8696a0;
-  /* Texto secundário/labels (cinza médio) */
 
   --border-soft: rgba(134, 150, 160, 0.15);
-  /* Para divisórias e bordas sutis */
   --border-medium: rgba(134, 150, 160, 0.3);
 
-  /* Cores para Gráficos (usadas em CORE_CHART_COLORS e ProgressBar) */
+  /* Cores para Gráficos */
   --chart-color-cpu-core1: #c8ce13;
   --chart-color-cpu-core2: #349e97;
   --chart-color-cpu-core3: #de1a72;
@@ -26,7 +21,6 @@
   --chart-color-cpu-core8: #66ffb3;
 
   --accent-color-memory: #53bdeb;
-  /* Azul para memória */
 
   --button-primary-bg: var(--text-primary);
   --button-primary-text: var(--background-body);

@@ -1,4 +1,5 @@
 /* so-dashboard/front-end/src/components/MemoryUsage/MemoryUsageCard.module.css */
+/* so-dashboard/front-end/src/components/MemoryUsage/MemoryUsageCard.module.css */
 .memoryTypeSection {
     margin-bottom: 20px;
 }
@@ -17,43 +18,35 @@
     letter-spacing: 0.5px;
 }
 
-.memorySection {
-    margin-bottom: 10px;
+.memoryInfoBlock {
+    /* NOVO para agrupar valores antes da barra */
+    margin-bottom: 8px;
 }
 
-.labelWithValue {
+.memoryValueRow {
+    /* NOVO */
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 6px;
-}
-
-.labelText {
     font-size: 0.9rem;
-    color: var(--text-secondary);
-    margin-right: 8px;
-}
-
-.valueText {
-    font-size: 0.9rem;
-    font-weight: 500;
     color: var(--text-primary);
-    text-align: right;
+    font-weight: 500;
+    line-height: 1.4;
 }
 
-.memoryDetails {
+.memoryValueRow span:first-child {
+    /* Label "Usada:", "Livre:" */
+    color: var(--text-secondary);
+    font-weight: 400;
+    margin-right: 10px;
+}
+
+.memoryPercentRow {
+    /* NOVO para as porcentagens */
     display: flex;
     justify-content: space-between;
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     color: var(--text-secondary);
-    margin-bottom: 20px;
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px solid var(--border-soft);
-}
-
-.detailItem {
-    /* Estilos para cada item de detalhe, se necessário */
+    margin-top: 4px;
 }
 
 .chartTitle {
@@ -68,7 +61,8 @@
 
 .chartContainer {
     width: 100%;
-    height: 200px;
+    height: 180px;
+    /* Reduzido para dar mais espaço aos dados acima */
 }
 
 .loadingText,
@@ -77,9 +71,9 @@
     text-align: center;
     padding: 20px;
     font-style: italic;
+    font-size: 0.9rem;
 }
 
 .errorText {
     color: var(--chart-color-cpu-core6);
-    /* Cor vermelha para erro */
 }

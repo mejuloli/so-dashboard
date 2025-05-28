@@ -5,13 +5,12 @@ import CpuUsageCard from './components/CpuUsage/CpuUsageCard';
 import MemoryUsageCard from './components/MemoryUsage/MemoryUsageCard';
 import ProcessListCard from './components/ProcessList/ProcessListCard';
 import ProcessDetailModal from './components/ProcessList/ProcessDetailModal';
-import TotalSystemMetricsCard from './components/SystemTotals/TotalSystemMetricsCard'; // NOVO
-import ProcessStatusDistributionCard from './components/ProcessStatus/ProcessStatusDistributionCard'; // NOVO
+import SystemSummaryCards from './components/SystemTotals/TotalSystemMetricsCard'; // Importa o wrapper
+// Removido: import ProcessStatusDistributionCard from './components/ProcessStatus/ProcessStatusDistributionCard';
 import styles from './App.module.css';
 
 function App() {
   const [selectedProcessForDetail, setSelectedProcessForDetail] = useState(null);
-
   const handleProcessSelect = (process) => { setSelectedProcessForDetail(process); };
   const handleCloseDetailModal = () => { setSelectedProcessForDetail(null); };
 
@@ -21,18 +20,12 @@ function App() {
         <CpuUsageCard />
         <MemoryUsageCard />
       </div>
-      <div className={styles.midSectionCardsContainer}> {/* Novo container para os gráficos de totais e status */}
-        <TotalSystemMetricsCard />
-        <ProcessStatusDistributionCard />
+      <div className={styles.summaryCardsContainer}> {/* Novo container para os cards de totais */}
+        <SystemSummaryCards /> {/* Renderiza os dois cards de totais */}
       </div>
       <ProcessListCard onProcessSelect={handleProcessSelect} />
-
-      <ProcessDetailModal
-        process={selectedProcessForDetail}
-        onClose={handleCloseDetailModal}
-      />
+      <ProcessDetailModal process={selectedProcessForDetail} onClose={handleCloseDetailModal} />
     </DashboardLayout>
   );
 }
-
 export default App;

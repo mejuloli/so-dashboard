@@ -19,11 +19,6 @@
     align-items: center;
 }
 
-.filterContainer svg {
-    margin-right: 8px;
-    color: var(--text-secondary);
-}
-
 .filterInput {
     padding: 8px 10px;
     border: 1px solid var(--border-medium);
@@ -62,7 +57,6 @@
     background-color: rgba(255, 255, 255, 0.05);
 }
 
-/* --- ESTILOS DA TABELA --- */
 .tableContainer {
     width: 100%;
     overflow-x: auto;
@@ -73,120 +67,14 @@
 
 .tableContainer table {
     width: 100%;
-    /* Garante que a tabela tente ocupar todo o espaço do container */
     border-collapse: collapse;
     font-size: 0.85rem;
     table-layout: fixed;
-    /* MUITO IMPORTANTE para larguras de coluna estáveis */
 }
 
-.tableContainer thead th {
-    background-color: var(--background-card);
-    color: var(--text-primary);
-    padding: 10px 8px;
-    /* Reduzido padding horizontal para mais espaço para conteúdo e indicador */
-    text-align: left;
-    white-space: nowrap;
-    border-bottom: 1px solid var(--border-medium);
-    cursor: pointer;
-    user-select: none;
-    position: relative;
-    /* Para posicionar o indicador de ordenação se necessário */
-    overflow: hidden;
-    /* Para garantir que o text-ellipsis funcione no th */
-    text-overflow: ellipsis;
-    /* Adiciona "..." se o nome da coluna for muito grande */
-}
-
-/* Definindo larguras mínimas e máximas ou larguras fixas para as colunas */
-/* Estas larguras são aplicadas aos TH e TD correspondentes. */
-/* Ajuste os valores conforme necessário. */
-.tableContainer th:nth-child(1),
-.tableContainer td:nth-child(1) {
-    width: 70px;
-}
-
-/* PID */
-.tableContainer th:nth-child(2),
-.tableContainer td:nth-child(2) {
-    width: 220px;
-}
-
-/* Nome */
-.tableContainer th:nth-child(3),
-.tableContainer td:nth-child(3) {
-    width: 120px;
-}
-
-/* Usuário */
-.tableContainer th:nth-child(4),
-.tableContainer td:nth-child(4) {
-    width: 100px;
-}
-
-/* Status */
-.tableContainer th:nth-child(5),
-.tableContainer td:nth-child(5) {
-    width: 80px;
-    text-align: right;
-    padding-right: 15px;
-}
-
-/* CPU % */
-.tableContainer th:nth-child(6),
-.tableContainer td:nth-child(6) {
-    width: 100px;
-    text-align: right;
-    padding-right: 15px;
-}
-
-/* Mem. (MB) */
-.tableContainer th:nth-child(7),
-.tableContainer td:nth-child(7) {
-    width: 80px;
-    text-align: right;
-    padding-right: 15px;
-}
-
-/* Threads */
-.tableContainer th:nth-child(8),
-.tableContainer td:nth-child(8) {
-    width: 70px;
-}
-
-/* PPID */
-.tableContainer th:nth-child(9),
-.tableContainer td:nth-child(9) {
-    width: 90px;
-}
-
-/* Prioridade */
-.tableContainer th:nth-child(10),
-.tableContainer td:nth-child(10) {
-    width: 70px;
-}
-
-/* Nice */
-
-/* Estilo para o indicador de ordenação para que não ocupe muito espaço extra */
-.sortIndicator {
-    /* display: inline-block; */
-    /* Já é um span */
-    /* width: 1em; */
-    /* Dá um espaço fixo para o indicador */
-    /* text-align: left; */
-    margin-left: 4px;
-    /* Espaço entre o texto da coluna e o indicador */
-    font-size: 0.7em;
-    /* Torna o indicador um pouco menor */
-}
-
-
-.tableContainer thead th:hover {
-    background-color: var(--background-body);
-}
-
+.tableContainer th,
 .tableContainer td {
+    width: 20%;
     padding: 10px 12px;
     text-align: left;
     border-bottom: 1px solid var(--border-soft);
@@ -195,17 +83,47 @@
     text-overflow: ellipsis;
 }
 
-/* Alinhar colunas numéricas à direita no corpo da tabela também */
-.tableContainer td:nth-child(5),
-.tableContainer td:nth-child(6),
-.tableContainer td:nth-child(7) {
+.tableContainer th:nth-child(1),
+.tableContainer td:nth-child(1) {
     text-align: right;
     padding-right: 15px;
 }
 
+/* PID */
+.tableContainer th:nth-child(3),
+.tableContainer td:nth-child(3) {
+    text-align: right;
+    padding-right: 15px;
+}
+
+/* CPU % */
+.tableContainer th:nth-child(4),
+.tableContainer td:nth-child(4) {
+    text-align: right;
+    padding-right: 15px;
+}
+
+/* Mem. (MB) */
+
+.tableContainer thead th {
+    background-color: var(--background-card);
+    color: var(--text-primary);
+    cursor: pointer;
+    user-select: none;
+    border-bottom-width: 2px;
+    border-bottom-color: var(--border-medium);
+}
+
+.tableContainer thead th:hover {
+    background-color: var(--background-body);
+}
 
 .tableContainer tr:last-child td {
     border-bottom: none;
+}
+
+.tableContainer tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.03);
 }
 
 .tableContainer tbody tr.clickableRow:hover {
@@ -219,8 +137,6 @@
     color: var(--text-secondary);
     font-style: italic;
 }
-
-/* --- FIM DOS ESTILOS DA TABELA --- */
 
 .loadMoreButton {
     display: block;
