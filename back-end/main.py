@@ -17,6 +17,16 @@ def api_processes():
     processes_data = controller.get_processes(limit=limit)
     return jsonify(processes_data)
 
+# endpoint para um processo específico
+@app.route('/api/process/<int:pid>') # define a rota para acessar um processo específico pelo PID
+def api_specific_process(pid):
+    process = controller.get_specific_process(pid) # obtém as informações do processo
+
+    if process: # verifica se o processo foi encontrado
+        return jsonify(process) # retorna as informações do processo em formato JSON
+    else:
+        return jsonify({"error": f"Processo com PID {pid} não localizado."}), 404 # retorna erro 404 se o processo não for encontrado
+
 # endpoint para os dados de memória
 @app.route('/api/memory') # define a rota para acessar os dados de memória
 def api_memory():
