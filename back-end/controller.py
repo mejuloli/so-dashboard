@@ -43,7 +43,7 @@ class Controller:
         processes = model.get_processes()
         # Limita a lista de processos ao número especificado ou retorna todos se o limite for 0
         return processes[:limit] if limit > 0 else processes
-
+    
     def get_specific_process(self, pid):
         # Obtém informações de um processo específico pelo PID
         return model.get_specific_process_by_pid(pid)

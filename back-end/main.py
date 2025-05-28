@@ -7,6 +7,9 @@ app = Flask(__name__)
 # criando uma instância do Controller
 controller = Controller()
 
+# inicia a atualização periódica dos dados
+controller.start_periodic_update()
+
 # endpoint para os processos
 @app.route('/api/processes') # define a rota para acessar os processos
 def api_processes():
