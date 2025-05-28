@@ -49,6 +49,42 @@ def get_processes():
 
 #--------------------------------------------------------------------------------------------------------------------
 
+# função para obter informações de um processo específico pelo PID
+def get_specific_process_by_pid(pid):
+
+    pid_path = f"/proc/{pid}/status" # caminho do processo
+
+    try:
+        with open(pid_path, 'r') as file: # abre o arquivo de status do processo
+            process_name = ""
+            process_uid = ""
+            process_threads = ""
+
+            for row in file: # lê cada linha do arquivo de status
+                # divide a linha em ":" armazena nome/uid/threads do processo e remove espaços em branco
+                if row.startswith("Name:"): 
+                    process_name = row.split(":")[1].strip() 
+                elif row.startswith("Uid:"):
+                    process_uid = row.split(":")[1].strip()
+                elif row.startswith("Threads:"):
+                    process_threads = row.split(":")[1].strip()
+
+            # retorna as informações do processo em um dicionário
+            return {
+                "pid": pid,
+                "name": process_name,
+                "uid": process_uid,
+                "threads": process_threads
+            }
+
+    except FileNotFoundError: # caso o arquivo de status não exista
+        return None # retorna None se o processo não for encontrado
+    except Exception as e: # trata erros genéricos
+        print(f"Erro ao ler o processo {pid}: {e}") # exibe mensagem de erro
+        return None
+
+#--------------------------------------------------------------------------------------------------------------------
+
 
 # função para obter o uso de memória do sistema
 def get_memory_usage():
