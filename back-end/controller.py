@@ -1,70 +1,65 @@
 import time
-import model  # Importa o módulo model.py (que contém a lógica de coleta de dados)
-import threading # Para criar a thread de atualização do cache
+import model
+import threading
 
-"""#####################################################################################################
-######################################### PROJETO A ####################################################
-#####################################################################################################"""
 
+# definição da classe Controller, responsável por gerenciar a coleta e o cache de dados do sistema
 class Controller:
+
+    # função construtora da classe Controller
     def __init__(self):
 
-        # Intervalo em segundos para a atualização periódica do cache de dados.
-        self.update_interval_seconds = 5 
+        # intervalo de atualização do cache em segundos
+        self.update_interval_seconds = 5
 
-        # Lock (trava) para garantir que o acesso ao cache de dados (leitura/escrita)
-        # seja seguro em um ambiente com múltiplas threads (evita race conditions).
+        # criação de uma trava para garantir que os dados do cache não sejam acessados simultaneamente pelas threads
         self.data_cache_lock = threading.Lock()
-        
-        # Estrutura inicial do cache de dados.
-        # Este dicionário armazenará os dados mais recentes coletados do sistema.
+
+        # dicionário que armazena os dados do cache - processos, uso de memória e uso de CPU
         self.current_data_cache = {
-            'processes': [], # Lista de processos detalhados
-            'memory': {"ram": {}, "swap": {}}, # Informações de memória RAM e SWAP
-            'cpu': {"overall_usage_percent": 0.0, "overall_idle_percent": 100.0, 
-                    "number_of_cores": 0, "cores": [], 
-                    "total_processes": 0, "total_threads": 0}, # Informações da CPU e contagens
-            'filesystem': [],       # Lista de partições e uso
-            'directory': {},        # Conteúdo do diretório atual
-            'process_io': {}        # Cache de E/S por processo
+            'processes': [],
+            'memory': {"ram": {}, "swap": {}}, 
+            'cpu': {
+                "overall_usage_percent": 0.0, 
+                "overall_idle_percent": 100.0,
+                "number_of_cores": 0, 
+                "cores": [],
+                "total_processes": 0, 
+                "total_threads": 0
+            },
+            'filesystem': [],
+            'directory': {},
+            'process_io': {}
         }
 
-        # Atributo para rastrear a thread de atualização, inicializado como None.
+        # inicialização da thread de atualização periódica do cache como None
         self._update_thread = None
 
-    #--------------------------------------------------------------------------------------------------------------------------
+    #---------------------------------------------------------------------------------------------------#
 
+    # função interna que atualiza os dados do cache e coleta informações sobre processos, uso de memória e uso de CPU
     def _update_data_cache_internal(self):
-        """
-        Método privado responsável por atualizar o cache de dados (self.current_data_cache).
-        Este método é chamado periodicamente pela thread de atualização em background.
-        Ele adquire um lock para garantir que a atualização do cache seja atômica e segura.
-        """
-        # Adquire o lock. Apenas uma thread pode executar este bloco por vez.
-        with self.data_cache_lock: 
 
-            # Chama as funções do módulo 'model' para obter os dados mais recentes do sistema.
-            processes_list_data = model.get_processes()
-            memory_system_data = model.get_memory_usage()
-            cpu_model_raw_data = model.get_cpu_usage() # Contém 'overall_usage_percent', 'cores', etc.
+        # bloqueio de acesso ao cache para garantir que os dados não sejam acessados simultaneamente
+        with self.data_cache_lock:
+            processes_list_data = model.get_processes() # obtém a lista de processos do sistema
+            memory_system_data = model.get_memory_usage()  # obtém o uso de memória do sistema
+            cpu_model_raw_data = model.get_cpu_usage() # obtém o uso de CPU do sistema
+            filesystem_list_data = model.get_filesystem_info() # obtém informações do sistema de arquivos
 
-            # Atualiza as respectivas chaves no dicionário de cache.
+            # atualiza o cache com os dados coletados
             self.current_data_cache['processes'] = processes_list_data
             self.current_data_cache['memory'] = memory_system_data
-            
-            # Para os dados da CPU, combina os dados brutos do model com contagens de processos/threads
-            # derivadas da lista de processos atualizada.
             self.current_data_cache['cpu'] = {
-                **cpu_model_raw_data, # Desempacota os dados da CPU vindos do model
-                'total_processes': len(processes_list_data), # Calcula o número total de processos
-                # Calcula o número total de threads somando o campo 'threads' de cada processo
+                **cpu_model_raw_data,
+                'total_processes': len(processes_list_data),
                 'total_threads': sum(int(p.get('threads', 0)) for p in processes_list_data)
             }
 
-            # Atualiza o cache de informações do sistema de arquivos
-            self.current_data_cache['filesystem'] = model.get_filesystem_info()
+            # atualiza o cache de informações do sistema de arquivos
+            self.current_data_cache['filesystem'] = filesystem_list_data
 
-            # Atualiza o cache do conteúdo do diretório atual (padrão é '/')
+            # atualiza o cache do conteúdo do diretório atual (padrão é '/')
             self.current_data_cache['process_io'] = {}
             for proc in processes_list_data:
                 pid = proc['pid']
@@ -72,89 +67,112 @@ class Controller:
                     'io_stats': model.get_process_es_info(pid),
                     'open_files': model.get_process_open_files(pid)
                 }
-    
-    #--------------------------------------------------------------------------------------------------------------------------
 
+    #---------------------------------------------------------------------------------------------------#
+
+    # função que inicia a thread de atualização periódica do cache
     def start_periodic_cache_update_thread(self):
-        """
-        Inicia uma thread em background que chama `_update_data_cache_internal()` periodicamente.
-        A thread é configurada como 'daemon', o que significa que ela não impedirá
-        o programa principal de terminar.
-        Evita iniciar múltiplas threads se uma já estiver rodando.
-        """
-        # Verifica se a thread já foi criada e se ainda está ativa.
+
+        # verifica se a thread de atualização já está em execução; se não, inicia uma nova thread
         if self._update_thread is None or not self._update_thread.is_alive():
             print("Controller: Iniciando thread de atualização periódica do cache.")
             
-            # Define a função que será executada em loop pela thread.
+            # função interna que executa o loop de atualização do cache
             def _cache_update_loop():
-                while True: # Loop infinito para atualização contínua.
+                while True:
                     try:
-                        self._update_data_cache_internal() # Chama o método de atualização do cache.
+                        self._update_data_cache_internal() # chama a função que atualiza os dados do cache
                     except Exception as e_thread_loop:
-                        # Captura exceções dentro do loop da thread para evitar que a thread morra silenciosamente.
                         print(f"Erro crítico na thread de atualização do cache do Controller: {e_thread_loop}")
-                    time.sleep(self.update_interval_seconds) # Aguarda o intervalo definido antes da próxima atualização.
+                    time.sleep(self.update_interval_seconds) # aguarda 5s antes de atualizar novamente
             
-            # Cria a nova thread.
+            #cria thread como daemon para que ela seja finalizada quando o programa principal for encerrado
             self._update_thread = threading.Thread(target=_cache_update_loop, daemon=True)
-            # Inicia a execução da thread.
             self._update_thread.start()
         else:
             print("Controller: Thread de atualização periódica do cache já está em execução.")
 
-    #--------------------------------------------------------------------------------------------------------------------------
 
+
+    #---------------------------------------------------------------------------------------------------#
+
+    """             PROJETO A - Implementação da Funcionalidade Inicial do Dashboard                  """
+
+    #---------------------------------------------------------------------------------------------------#
+
+
+
+    # função que retorna todas as informações dos processos em execução a partir do cache
     def get_all_processes_info_from_cache(self):
-        with self.data_cache_lock: # Garante leitura segura do cache.
-            # .get('processes', []) retorna [] se 'processes' não estiver no cache.
-            # list(...) cria uma cópia superficial da lista.
-            return list(self.current_data_cache.get('processes', [])) 
-        
-    #--------------------------------------------------------------------------------------------------------------------------
-    
-    def get_system_memory_info_from_cache(self):
+
+        # bloqueia o acesso ao cache para garantir que os dados não sejam acessados simultaneamente
         with self.data_cache_lock:
-            # dict(...) cria uma cópia superficial do dicionário.
-            return dict(self.current_data_cache.get('memory', {})) 
-        
-    #--------------------------------------------------------------------------------------------------------------------------
+            return list(self.current_data_cache.get('processes', []))
+
+    #---------------------------------------------------------------------------------------------------#
     
+    # função que retorna as informações de uso de memória do sistema a partir do cache
+    def get_system_memory_info_from_cache(self):
+
+        # bloqueia o acesso ao cache para garantir que os dados não sejam acessados simultaneamente
+        with self.data_cache_lock:
+            return dict(self.current_data_cache.get('memory', {}))
+
+    #---------------------------------------------------------------------------------------------------#
+    
+    # função que retorna as informações de uso de CPU do sistema a partir do cache
     def get_system_cpu_info_from_cache(self):
+
+        # bloqueia o acesso ao cache para garantir que os dados não sejam acessados simultaneamente
         with self.data_cache_lock:
             return dict(self.current_data_cache.get('cpu', {}))
-        
-    #--------------------------------------------------------------------------------------------------------------------------
-            
+    
+    #---------------------------------------------------------------------------------------------------#
+    
+    # função que busca informações específicas de um processo com base no PID no cache
     def get_specific_process_info_from_cache(self, pid_to_find):
+
+        # bloqueia o acesso ao cache para garantir que os dados não sejam acessados simultaneamente
         with self.data_cache_lock:
+
+            # percorre a lista de processos no cache e retorna os dados do processo com o PID correspondente
             processes_in_cache = self.current_data_cache.get('processes', [])
+
+            # se a lista de processos estiver vazia, retorna None
             for proc_data in processes_in_cache:
                 if proc_data.get('pid') == pid_to_find:
-                    return dict(proc_data) # Retorna uma cópia do dicionário do processo.
-            return None # Processo não encontrado no cache.
+                    return dict(proc_data)
+            return None
+        
+
+    #---------------------------------------------------------------------------------------------------#
+
+    """          PROJETO B - Mostrar dados do uso dos dispositivos de E/S pelos processos             """
+
+    #---------------------------------------------------------------------------------------------------#
 
 
-    """#####################################################################################################
-    ######################################### PROJETO B ####################################################
-    #####################################################################################################"""
-
-
-    # método para obter informações do sistema de arquivos
+    # função para obter informações do sistema de arquivos
     def get_filesystem_info_from_cache(self):
+
+        # bloqueia o acesso ao cache para garantir que os dados não sejam acessados simultaneamente
         with self.data_cache_lock:
             return list(self.current_data_cache.get('filesystem', []))
         
-    #--------------------------------------------------------------------------------------------------------------------------
+    #---------------------------------------------------------------------------------------------------#
 
-    # método para obter o conteúdo de um diretório específico do cache
+    # função para obter o conteúdo de um diretório específico do cache
     def get_directory_contents_from_cache(self, path='/'):
+
+        # bloqueia o acesso ao cache para garantir que os dados não sejam acessados simultaneamente
         with self.data_cache_lock:
             return dict(self.current_data_cache.get('directory', {}))
         
-    #--------------------------------------------------------------------------------------------------------------------------
+    #---------------------------------------------------------------------------------------------------#
 
-    # método para obter informações de E/S de um processo específico do cache
+    # função para obter informações de E/S de um processo específico do cache
     def get_process_io_info_from_cache(self, pid):
+
+        # bloqueia o acesso ao cache para garantir que os dados não sejam acessados simultaneamente
         with self.data_cache_lock:
             return dict(self.current_data_cache['process_io'].get(pid, {}))
