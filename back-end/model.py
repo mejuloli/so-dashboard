@@ -1,7 +1,10 @@
 import os
-# import pwd # Módulo pwd não é mais usado para get_username_from_uid
 import time
 import datetime # Para formatação de timestamps
+
+"""#####################################################################################################
+######################################### PROJETO A ####################################################
+#####################################################################################################"""
 
 # --- Variáveis Globais para Cálculo de Uso de CPU Delta ---
 previous_overall_cpu_times = None
@@ -360,3 +363,218 @@ def get_cpu_usage():
             "number_of_cores": num_cores_fallback_sys,
             "cores": [{"id": i_fb_sys, "name": f"Core {i_fb_sys}", "usage_percent": 0.0} for i_fb_sys in range(num_cores_fallback_sys)]
         }
+    
+"""#####################################################################################################
+######################################### PROJETO B ####################################################
+#####################################################################################################"""
+
+
+# Função para obter informações do sistema de arquivos
+def get_filesystem_info():
+
+    # cria uma lista vazia para armazenar as informações de cada ponto de montagem válido
+    mounts = []
+
+    # tenta abrir o arquivo '/proc/mounts', que contém informações sobre todos os sistemas de arquivos montados
+    try:
+        with open('/proc/mounts', 'r') as f:
+            for line in f: # lê o arq linha por linha
+
+                # divide a linha em partes, esperando pelo menos 4 colunas
+                parts = line.split()
+
+                # se a linha não tiver pelo menos 4 partes, ignora
+                if len(parts) < 4:
+                    continue
+
+                # extrai as informações principais: dispositivo, ponto de montagem e tipo de sistema de arquivos
+                device, mountpoint, fstype = parts[0], parts[1], parts[2]
+                
+                # ignora sistemas de arquivos virtuais e que não são relevantes para o monitoramento de uso
+                if fstype in ('proc', 'sysfs', 'devpts', 'tmpfs', 'cgroup'):
+                    continue
+                    
+                try:
+                    stat = os.statvfs(mountpoint) # obtém espaço em disco do ponto de montagem atual
+                    total = stat.f_blocks * stat.f_frsize # total de espaço em bytes
+                    free = stat.f_bfree * stat.f_frsize # espaço livre em bytes
+                    used = total - free # espaço usado em bytes
+                    
+                    # adiciona as informações coletadas a um dicionário e o adiciona à lista de montagens
+                    mounts.append({
+                        "device": device,
+                        "mountpoint": mountpoint,
+                        "type": fstype,
+                        "total_gb": round(total / (1024**3), 2), # em GB
+                        "used_gb": round(used / (1024**3), 2),
+                        "free_gb": round(free / (1024**3), 2),
+                        "usage_percent": round(used / total * 100, 2) if total > 0 else 0
+                    })
+
+                # ignora erros de permissão ou outros problemas ao acessar o ponto de montagem
+                except Exception:
+                    continue
+
+    # exibe mensagem de erro se não for possível ler o arquivo '/proc/mounts'
+    except Exception as e:
+        print(f"Erro ao ler informações do sistema de arquivos: {e}")
+
+    # retorna a lista de sistemas de arquivos com as métricas coletadas
+    return mounts
+
+#--------------------------------------------------------------------------------------------------------------------------
+
+# função para obter o conteúdo de um diretório
+def get_directory_contents(path='/'):
+
+    contents = [] # lista para armazenar os detalhes dos arquivos e subdiretórios
+
+    try:
+        # verifica se o caminho é absoluto; se não for, converte para absoluto
+        if not os.path.isabs(path):
+            path = os.path.abspath(path)
+            
+        # percorre todos os arquivos e diretórios dentro do caminho especificado
+        for entry in os.listdir(path):
+
+            # cria o caminho completo do arquivo ou diretório
+            full_path = os.path.join(path, entry)
+
+            try:
+                # obtém informações detalhadas sobre o item usando stat
+                stat = os.stat(full_path)
+
+                # adiciona as informações do item à lista 'contents', como um dicionário
+                contents.append({
+                    "name": entry, # nome do arquivo ou diretório
+                    "path": full_path, # caminho completo
+                    "is_dir": os.path.isdir(full_path), # booleano, verifica se é um diretório
+                    "size_bytes": stat.st_size, # tamanho em bytes
+                    "size_human": _bytes_to_human(stat.st_size), # chama função auxiliar para converter bytes em formato legível
+                    "modified_time": datetime.datetime.fromtimestamp(stat.st_mtime).isoformat(), # data de modificação em formato ISO 8601
+                    "permissions": oct(stat.st_mode & 0o777), # permissões do item extraídas com máscara de bits
+                    "owner": get_username_from_uid(stat.st_uid), # nomo do usuário proprietário obtido a partir do UID
+                    "group": get_username_from_uid(stat.st_gid)  # nome do grupo proprietário obtido a partir do GID
+                })
+
+            except Exception:
+                continue
+
+    # exibe mensagem se houver erro ao acessar o diretório (ex: permissão negada)
+    except Exception as e:
+        print(f"Erro ao listar diretório {path}: {e}")
+    
+    # retorna um dicionário com o caminho e a lista de conteúdos
+    return {"path": path, "contents": contents}
+
+#--------------------------------------------------------------------------------------------------------------------------
+
+# função auxiliar para converter bytes em formato legível (B, KB, MB, GB, etc.)
+def _bytes_to_human(size):
+
+    for unit in ['B', 'KB', 'MB', 'GB']:
+        # se o tamanho for menor que 1024, retorna o valor atual com uma casa decimal e a unidade correspondente
+        if size < 1024.0:
+            return f"{size:.1f} {unit}"
+        
+        # caso contrário, divide o tamanho por 1024 para converter para a próxima unidade
+        size /= 1024.0
+
+    # se o tamanho for maior ou igual a 1024, converte para TB e retorna com uma casa decimal
+    return f"{size:.1f} TB"
+
+#--------------------------------------------------------------------------------------------------------------------------
+
+# função para obter informações de E/S de um processo
+def get_process_es_info(pid):
+   
+   # inicializa um dicionário vazio para armazenar as estatísticas de E/S
+    es_stats = {}
+
+    # tenta abrir o arquivo '/proc/[pid]/io', que contém estatísticas de entrada/saída do processo com o PID fornecido
+    try:
+        with open(f'/proc/{pid}/io', 'r') as f:
+            for line in f:
+
+                # divide a linha em chave e valor usando o primeiro ':' como delimitador
+                key, value = line.split(':', 1)
+
+                # remove espaços em branco e converte a chave para minúsculas
+                key = key.strip().lower()
+
+                # verifica se a chave é uma das estatísticas de E/S relevantes
+                if key in ['rchar', 'wchar', 'read_bytes', 'write_bytes',
+                          'syscr', 'syscw', 'cancelled_write_bytes']:
+                    try:
+                        # tenta converter o valor para inteiro e adiciona ao dicionário de estatísticas
+                        es_stats[key] = int(value.strip())
+                    except ValueError:
+                        continue
+
+    # exibe mensagem de erro se o processo não for encontrado, se PID for inválido ou se houver problemas de permissão
+    except FileNotFoundError:
+        print(f"Processo {pid} não encontrado ou terminou")
+    except PermissionError:
+        print(f"Permissão negada para acessar estatísticas do processo {pid}")
+    except Exception as e:
+        print(f"Erro ao ler E/S do processo {pid}: {str(e)}")
+    
+    # retorna o dicionário com as estatísticas de E/S coletadas
+    return es_stats
+
+#--------------------------------------------------------------------------------------------------------------------------
+
+# função para obter os arquivos abertos por um processo
+def get_process_open_files(pid):
+
+    open_files = [] # lista para armazenar os arquivos abertos pelo processo
+
+    try:
+        # define o caminho para o diretório que contém os descritores de arquivos do processo
+        fd_dir = f'/proc/{pid}/fd'
+
+        # lista todos os descritores de arquivos (FDs) presentes nesse diretório
+        for fd in os.listdir(fd_dir):
+            try:
+                fd_path = os.path.join(fd_dir, fd) # cria o caminho completo do descritor de arquivo
+                target = os.readlink(fd_path) # lê o link simbólico do descritor que aponta para o arquivo real ou recurso
+
+                # adiciona um dicionário com detalhes do arquivo aberto à lista 'open_files'
+                open_files.append({
+                    "fd": fd, # número do descritor de arquivo
+                    "path": target, # caminho do arquivo ou recurso apontado pelo descritor
+                    "type": _get_file_type(fd_path) # chama função auxiliar para determinar o tipo de arquivo
+                })
+
+            except Exception:
+                continue
+
+    except Exception:
+        pass
+    
+    # retorna a lista de arquivos abertos pelo processo
+    return open_files
+
+#--------------------------------------------------------------------------------------------------------------------------
+
+# função auxiliar para determinar o tipo de arquivo a partir do caminho do descritor
+def _get_file_type(fd_path):
+
+    try:
+        # obtém as informações do arquivo usando os.stat
+        mode = os.stat(fd_path).st_mode
+
+        if os.path.isdir(fd_path): # verifica se é um diretório
+            return "directory"
+        elif os.path.isfile(fd_path): # verifica se é um arquivo regular
+            return "file"
+        elif os.path.islink(fd_path): # verifica se é um link simbólico
+            return "symlink"
+        elif os.path.ismount(fd_path): # verifica se é um ponto de montagem
+            return "mount"
+        else: # se não for nenhum dos tipos acima, retorna "special" para outros tipos especiais
+            return "special"
+        
+    # se ocorrer algum erro (ex: permissão negada ou arquivo não existe), retorna "unknown"
+    except Exception:
+        return "unknown"
