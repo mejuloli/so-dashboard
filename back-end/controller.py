@@ -35,6 +35,9 @@ class Controller:
         # inicialização da thread de atualização periódica do cache como None
         self._update_thread = None
 
+        # tempo de validade do cache em segundos, apenas para directory e process_io
+        self.cache_expiry_seconds = 5  # tempo de validade do cache
+
     #---------------------------------------------------------------------------------------------------#
 
     # função interna que atualiza os dados do cache e coleta informações sobre processos, uso de memória e uso de CPU
@@ -59,14 +62,17 @@ class Controller:
             # atualiza o cache de informações do sistema de arquivos
             self.current_data_cache['filesystem'] = filesystem_list_data
 
-            # atualiza o cache do conteúdo do diretório atual (padrão é '/')
+            # atualiza o cache de diretórios e E/S de processos
+            self._clean_expired_cache()
+
+            """# atualiza o cache do conteúdo do diretório atual (padrão é '/')
             self.current_data_cache['process_io'] = {}
             for proc in processes_list_data:
                 pid = proc['pid']
                 self.current_data_cache['process_io'][pid] = {
                     'io_stats': model.get_process_es_info(pid),
                     'open_files': model.get_process_open_files(pid)
-                }
+                }"""
 
     #---------------------------------------------------------------------------------------------------#
 
@@ -91,6 +97,29 @@ class Controller:
             self._update_thread.start()
         else:
             print("Controller: Thread de atualização periódica do cache já está em execução.")
+
+    #---------------------------------------------------------------------------------------------------#
+
+    # função que limpa o cache de dados expirados, removendo entradas antigas
+    def _clean_expired_cache(self):
+
+        # obtém o timestamp atual para verificar a validade dos dados no cache
+        now = time.time()
+
+        # bloqueia o acesso ao cache para garantir que os dados não sejam acessados simultaneamente
+        with self.data_cache_lock:
+
+            # limpa cache de E/S
+            self.current_data_cache['process_io'] = {
+                pid: data for pid, data in self.current_data_cache['process_io'].items()
+                if (now - data['timestamp']) <= self.cache_expiry_seconds
+            }
+
+            # limpa cache de diretórios
+            self.current_data_cache['directory'] = {
+                k: v for k, v in self.current_data_cache['directory'].items()
+                if (now - v['timestamp']) <= self.cache_expiry_seconds
+            }
 
 
 
@@ -162,17 +191,56 @@ class Controller:
     #---------------------------------------------------------------------------------------------------#
 
     # função para obter o conteúdo de um diretório específico do cache
-    def get_directory_contents_from_cache(self, path='/'):
+    def get_directory_contents(self, path='/'):
 
-        # bloqueia o acesso ao cache para garantir que os dados não sejam acessados simultaneamente
+        # obtém o timestamp atual para verificar a validade do cache
+        now = time.time()
+
+        # cria uma chave de cache única baseada no caminho do diretório
+        cache_key = f"dir_{path}"
+        
+        # verifica se os dados estão em cache e ainda são válidos
+        cached_data = self.current_data_cache['directory'].get(cache_key)
+        if cached_data and (now - cached_data['timestamp']) <= self.cache_expiry_seconds:
+            return cached_data['data']
+        
+        # se não houver cache válido, busca novos dados
+        new_dir_data = model.get_directory_contents(path)
+        
+        # atualiza o cache com os novos dados e garante acesso exclusivo para evitar condições de corrida
         with self.data_cache_lock:
-            return dict(self.current_data_cache.get('directory', {}))
+            self.current_data_cache['directory'][cache_key] = {
+                'data': new_dir_data,
+                'timestamp': now
+            }
+        
+        return new_dir_data
         
     #---------------------------------------------------------------------------------------------------#
 
     # função para obter informações de E/S de um processo específico do cache
-    def get_process_io_info_from_cache(self, pid):
+    def get_process_io_info(self, pid):
 
-        # bloqueia o acesso ao cache para garantir que os dados não sejam acessados simultaneamente
-        with self.data_cache_lock:
-            return dict(self.current_data_cache['process_io'].get(pid, {}))
+        # obtém o timestamp atual para verificar a validade do cache
+        now = time.time()
+    
+        # verifica se os dados estão em cache e ainda são válidos
+        cached_data = self.current_data_cache['process_io'].get(pid)
+        if cached_data and (now - cached_data['timestamp']) <= self.cache_expiry_seconds:
+            return cached_data['data']
+        
+        # se não houver cache válido, busca novos dados
+        io_details = {
+            'io_stats': model.get_process_es_info(pid),
+            'open_files': model.get_process_open_files(pid),
+            'timestamp': now  # armazena o timestamp para controle de validade
+        }
+        
+        # atualiza o cache
+        with self.data_cache_lock:  # garante acesso exclusivo ao cache para evitar condições de corrida
+            self.current_data_cache['process_io'][pid] = {
+                'data': io_details,
+                'timestamp': now
+            }
+        
+        return io_details
