@@ -94,7 +94,10 @@ def handle_api_get_directory():
 
     # obtém o parâmetro 'path' da URL, com valor padrão sendo a raiz do sistema
     path = request.args.get('path', default='/')
-    return jsonify(app_api_controller.get_directory_contents_from_cache(path))
+    
+    # chama a função do controller para obter o conteúdo do diretório a partir do cache
+    directory_data = app_api_controller.get_directory_contents(path)
+    return jsonify(directory_data)
 
 # ---------------------------------------------------------------------------------------------------------------------------------
 
@@ -103,10 +106,13 @@ def handle_api_get_directory():
 def handle_api_get_process_io(pid):
 
     # obtém as informações de E/S do processo a partir do cache usando o PID
-    io_data = app_api_controller.get_process_io_info_from_cache(pid)
-    if io_data:
-        return jsonify(io_data) 
-    return jsonify({"error": "Dados de E/S não disponíveis"}), 404
+    io_data = app_api_controller.get_process_io_info(pid)
+
+    # se não houver dados de E/S ou arquivos abertos, retorna um erro 404
+    if not io_data.get('io_stats') and not io_data.get('open_files'):
+        return jsonify({"error": f"Dados de E/S não disponíveis para PID {pid}"}), 404
+    
+    return jsonify(io_data)
 
 # ---------------------------------------------------------------------------------------------------------------------------------
 
