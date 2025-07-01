@@ -11,10 +11,10 @@ PIP := $(PYTHON) -m pip
 
 # Caminho para a pasta do backend.
 # Se seus arquivos .py estão na raiz do projeto, use: BACKEND_DIR := .
-BACKEND_DIR := ./backend
+BACKEND_DIR := ./back-end
 
 # Caminho para a pasta do frontend React.
-FRONTEND_DIR := ./so-dashboard/front-end
+FRONTEND_DIR := ./front-end
 
 # Comandos para gerenciamento de pacotes Node.js.
 # Detecta se 'yarn' está disponível; caso contrário, usa 'npm'.
@@ -88,12 +88,9 @@ $(BACKEND_DIR)/venv/bin/activate: $(BACKEND_DIR)/requirements.txt
 .PHONY: run_backend
 run_backend:
 	@echo ">>> Iniciando servidor backend Flask em http://localhost:5000..."
-	@echo ">>> (Certifique-se de que o ambiente virtual está ativo se rodar manualmente,"
-	@echo ">>>  ou use este comando que o ativa temporariamente)"
+	@echo ">>> (Utilizando o venv configurado em $(BACKEND_DIR)/venv)"
 	@echo ">>> Pressione CTRL+C para parar o servidor backend."
-	@( . $(BACKEND_DIR)/venv/bin/activate && \
-	   cd $(BACKEND_DIR) && $(PYTHON) $(FLASK_APP_FILE) \
-	) || echo "Falha ao iniciar backend. O ambiente virtual existe em $(BACKEND_DIR)/venv?"
+	@$(BACKEND_DIR)/venv/bin/python $(BACKEND_DIR)/main.py || echo "Falha ao iniciar backend. O ambiente virtual existe em $(BACKEND_DIR)/venv?"
 
 
 # --- Alvos do Frontend ---
@@ -103,14 +100,14 @@ run_backend:
 .PHONY: setup_frontend
 setup_frontend:
 	@echo ">>> Configurando dependências do frontend (pode levar alguns minutos)..."
-ifeq ("$(wildcard $(FRONTEND_DIR)/package.json)","")
-	@echo "ERRO: $(FRONTEND_DIR)/package.json não encontrado!"
-	@echo "Não é possível instalar dependências do frontend."
-	@exit 1
-else
-	cd $(FRONTEND_DIR) && $(NPM_INSTALL_CMD)
-	@echo ">>> Dependências do frontend instaladas com sucesso."
-endif
+	@if [ ! -f "$(FRONTEND_DIR)/package.json" ]; then \
+		echo "ERRO: $(FRONTEND_DIR)/package.json não encontrado!"; \
+		echo "Não é possível instalar dependências do frontend."; \
+		exit 1; \
+	else \
+		cd $(FRONTEND_DIR) && $(NPM_INSTALL_CMD); \
+		echo ">>> Dependências do frontend instaladas com sucesso."; \
+	fi
 
 # Inicia o servidor de desenvolvimento do frontend React.
 .PHONY: run_frontend
@@ -118,13 +115,13 @@ run_frontend:
 	@echo ">>> Iniciando servidor de desenvolvimento do frontend React..."
 	@echo ">>> Geralmente disponível em http://localhost:3000 (verifique a saída do comando)."
 	@echo ">>> Pressione CTRL+C para parar o servidor frontend."
-ifeq ("$(wildcard $(FRONTEND_DIR)/package.json)","")
-	@echo "ERRO: $(FRONTEND_DIR)/package.json não encontrado!"
-	@echo "Não é possível iniciar o frontend."
-	@exit 1
-else
-	cd $(FRONTEND_DIR) && $(NPM_START_CMD)
-endif
+	@if [ ! -f "$(FRONTEND_DIR)/package.json" ]; then \
+		echo "ERRO: $(FRONTEND_DIR)/package.json não encontrado!"; \
+		echo "Não é possível iniciar o frontend."; \
+		exit 1; \
+	else \
+		cd $(FRONTEND_DIR) && $(NPM_START_CMD); \
+	fi
 
 
 # --- Alvo Experimental para Rodar Ambos em Background ---

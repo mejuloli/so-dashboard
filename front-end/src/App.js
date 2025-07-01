@@ -1,11 +1,13 @@
 // so-dashboard/front-end/src/App.js
 import React, { useState } from 'react';
-import DashboardLayout from './components/Layout/DashboardLayout';
+import DashboardTabs from './components/Layout/DashboardTabs';
 import CpuUsageCard from './components/CpuUsage/CpuUsageCard';
 import MemoryUsageCard from './components/MemoryUsage/MemoryUsageCard';
 import ProcessListCard from './components/ProcessList/ProcessListCard';
 import ProcessDetailModal from './components/ProcessList/ProcessDetailModal';
 import SystemSummaryCards from './components/SystemTotals/TotalSystemMetricsCard'; // Importa o wrapper
+import FileSystemView from './components/FileSystem/FileSystemView';
+import DirectoryTree from './components/FileSystem/DirectoryTree';
 import styles from './App.module.css';
 
 function App() {
@@ -14,7 +16,7 @@ function App() {
   const handleCloseDetailModal = () => { setSelectedProcessForDetail(null); };
 
   return (
-    <DashboardLayout>
+    <DashboardTabs>
       <div className={styles.topCardsContainer}>
         <CpuUsageCard />
         <MemoryUsageCard />
@@ -24,7 +26,11 @@ function App() {
       </div>
       <ProcessListCard onProcessSelect={handleProcessSelect} />
       <ProcessDetailModal process={selectedProcessForDetail} onClose={handleCloseDetailModal} />
-    </DashboardLayout>
+      {/* Projeto B: FileSystem e Navegação de Diretórios */}
+      <FileSystemView />
+      <DirectoryTree />
+    </DashboardTabs>
   );
 }
+
 export default App;

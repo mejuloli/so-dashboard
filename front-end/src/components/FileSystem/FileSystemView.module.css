@@ -1,0 +1,106 @@
+.fsContainer {
+  margin: 2rem 0;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  padding: 1.5rem;
+}
+.fsTableContainer {
+  margin-top: 1rem;
+}
+.loadingText {
+  color: #888;
+  font-style: italic;
+  padding: 1rem 0;
+}
+.errorText {
+  color: #c00;
+  font-weight: bold;
+  padding: 1rem 0;
+}
+.fsTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+.fsTable th, .fsTable td {
+  border: 1px solid #e0e0e0;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+.fsTable th {
+  background: #f5f5f5;
+}
+.processListCard {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+}
+.controlsContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  gap: 15px;
+}
+.summaryStats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+  padding-top: 10px;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+.tableContainer {
+  width: 100%;
+  overflow-x: auto;
+  margin-bottom: 15px;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--card-border-radius);
+  background: var(--background-card);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+.tableContainer table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.97rem;
+  table-layout: auto;
+  background: transparent;
+}
+.tableContainer th,
+.tableContainer td {
+  padding: 12px 16px;
+  text-align: left !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-bottom: 1px solid var(--border-soft);
+  background: transparent;
+}
+.tableContainer thead th {
+  background-color: var(--background-body);
+  color: var(--accent-color-memory);
+  font-weight: bold;
+  font-size: 1.05rem;
+  border-bottom: 2px solid var(--accent-color-memory);
+  cursor: pointer;
+  user-select: none;
+  letter-spacing: 0.01em;
+}
+.tableContainer thead th:hover {
+  background-color: var(--background-card);
+}
+.tableContainer tr:last-child td {
+  border-bottom: none;
+}
+.tableContainer tbody tr:hover {
+  background-color: rgba(25, 118, 210, 0.04);
+}
+.noDataCell {
+  text-align: center !important;
+  padding: 20px !important;
+  color: var(--text-secondary);
+  font-style: italic;
+}

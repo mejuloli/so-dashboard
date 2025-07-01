@@ -1,5 +1,5 @@
 // so-dashboard/front-end/src/components/ProcessList/ProcessDetailModal.js
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './ProcessDetailModal.module.css'; // Estilos CSS Modules para este modal.
 
 /**
@@ -21,6 +21,24 @@ import styles from './ProcessDetailModal.module.css'; // Estilos CSS Modules par
  * @returns {JSX.Element|null} O elemento JSX que representa o modal, ou `null` se `props.process` não for fornecido.
  */
 const ProcessDetailModal = ({ process, onClose }) => {
+    const [ioStats, setIoStats] = useState(null);
+    const [ioError, setIoError] = useState(null);
+
+    // Efeito para buscar estatísticas de E/S do processo quando o modal é aberto.
+    useEffect(() => {
+        if (process && process.pid) {
+            // Faz a requisição para o endpoint de E/S do processo.
+            fetch(`http://localhost:5000/api/process/${process.pid}/io`)
+                .then(res => res.ok ? res.json() : Promise.reject(res))
+                .then(setIoStats)
+                .catch(() => setIoError('Não foi possível obter dados de E/S para este processo.'));
+        } else {
+            // Reseta os estados de E/S se não houver um processo válido.
+            setIoStats(null);
+            setIoError(null);
+        }
+    }, [process]);
+
     // Se não houver dados do processo, não renderiza nada (o modal fica oculto).
     if (!process) {
         return null;
@@ -103,6 +121,17 @@ const ProcessDetailModal = ({ process, onClose }) => {
     // caso esses campos não existam no objeto `process`, evitando erros.
     const memDetails = process.memory_details_kb || {};
     const detailedThreads = process.threads_detailed_info || [];
+
+    // Mapeamento para nomes amigáveis das estatísticas de E/S
+    const IO_STATS_LABELS = {
+        rchar: 'Bytes Lidos (rchar)',
+        wchar: 'Bytes Escritos (wchar)',
+        syscr: 'Chamadas de Leitura (syscr)',
+        syscw: 'Chamadas de Escrita (syscw)',
+        read_bytes: 'Bytes Lidos do Disco',
+        write_bytes: 'Bytes Escritos no Disco',
+        cancelled_write_bytes: 'Bytes de Escrita Cancelados',
+    };
 
     // --- Renderização do Modal ---
     return (
@@ -249,6 +278,40 @@ const ProcessDetailModal = ({ process, onClose }) => {
                             </div>
                         )
                     )}
+
+                    {/* --- Seção: Estatísticas de E/S (Projeto B) --- */}
+                    <h4 className={styles.sectionTitle}>Estatísticas de E/S</h4>
+                    {ioError && <div className={styles.ioError}>{ioError}</div>}
+                    {ioStats && (ioStats.io_stats || ioStats.open_files) ? (
+                        <div className={styles.detailGrid}>
+                            {ioStats.io_stats && Object.keys(ioStats.io_stats).length > 0 ? (
+                                Object.entries(ioStats.io_stats).map(([key, value]) => (
+                                    <React.Fragment key={key}>
+                                        <span className={styles.detailLabel}>{IO_STATS_LABELS[key] || key}:</span>
+                                        <span>{value.toLocaleString()}</span>
+                                    </React.Fragment>
+                                ))
+                            ) : (
+                                <span>Nenhuma estatística de E/S disponível.</span>
+                            )}
+                            {ioStats.open_files && ioStats.open_files.length > 0 && (
+                                <>
+                                    <span className={styles.detailLabel}>Arquivos Abertos:</span>
+                                    <span>
+                                        <ul style={{ margin: 0, paddingLeft: 18 }}>
+                                            {ioStats.open_files.map((file, idx) => (
+                                                <li key={idx}>
+                                                    {file.path ? `${file.path} (${file.type})` : file}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </span>
+                                </>
+                            )}
+                        </div>
+                    ) : !ioError ? (
+                        <div>Carregando estatísticas de E/S...</div>
+                    ) : null}
                 </div>
             </div>
         </div>

@@ -1,0 +1,79 @@
+.dashboardTabsContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.tabsHeader {
+  display: flex;
+  gap: 0.25rem; /* reduzido para menor espaçamento horizontal */
+  background: var(--background-card);
+  padding: 0.25rem 0.5rem 0 0.5rem; /* padding vertical reduzido */
+  position: relative;
+  z-index: 2;
+}
+.tab {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 0.7rem 1.6rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s, box-shadow 0.2s;
+  margin-bottom: 0;
+  letter-spacing: 0.02em;
+  box-shadow: none;
+  border: 1.5px solid transparent;
+  outline: none;
+  position: relative;
+}
+.tab:hover, .tab:focus {
+  background: var(--background-body);
+  color: var(--accent-color-memory);
+  z-index: 3;
+}
+.activeTab {
+  background: var(--background-body);
+  color: var(--accent-color-memory);
+  border: 1.5px solid var(--accent-color-memory);
+  padding: 0.7rem 2.0rem;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  z-index: 4;
+  box-shadow: 0 2px 12px 0 rgba(25,118,210,0.08), 0 0 0 2px var(--accent-color-memory, #90caf9);
+  /* Remove linha inferior, destaca com sombra e borda */
+}
+.tabsContent {
+  width: 100%;
+  padding: 0 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem; /* gap vertical reduzido */
+}
+.topCardsContainer {
+  display: flex;
+  gap: 1.2rem; /* gap reduzido */
+  margin-bottom: 1.2rem; /* reduzido */
+  width: 100%;
+  justify-content: stretch;
+  align-items: stretch;
+}
+.topCardsContainer > * {
+  flex: 1 1 0;
+  min-width: 0;
+}
+.summaryCardsContainer {
+  display: flex;
+  gap: 1.2rem; /* gap reduzido */
+  margin-bottom: 1.2rem; /* reduzido */
+  width: 100%;
+  justify-content: stretch;
+  align-items: stretch;
+}
+.summaryCardsContainer > * {
+  flex: 1 1 0;
+  min-width: 0;
+}

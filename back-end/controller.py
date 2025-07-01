@@ -42,37 +42,33 @@ class Controller:
 
     # função interna que atualiza os dados do cache e coleta informações sobre processos, uso de memória e uso de CPU
     def _update_data_cache_internal(self):
+        
+        # Colete os dados fora do lock!
+        processes_list_data = model.get_processes()
+        memory_system_data = model.get_memory_usage()
+        cpu_model_raw_data = model.get_cpu_usage()
+        filesystem_list_data = model.get_filesystem_info()
 
-        # bloqueio de acesso ao cache para garantir que os dados não sejam acessados simultaneamente
+        self._clean_expired_cache() # Limpa o cache de dados expirados
+        # bloqueia o acesso ao cache para garantir que os dados não sejam acessados simultaneamente
+        # Atualiza o cache com os dados coletados
         with self.data_cache_lock:
-            processes_list_data = model.get_processes() # obtém a lista de processos do sistema
-            memory_system_data = model.get_memory_usage()  # obtém o uso de memória do sistema
-            cpu_model_raw_data = model.get_cpu_usage() # obtém o uso de CPU do sistema
-            filesystem_list_data = model.get_filesystem_info() # obtém informações do sistema de arquivos
-
-            # atualiza o cache com os dados coletados
-            self.current_data_cache['processes'] = processes_list_data
-            self.current_data_cache['memory'] = memory_system_data
-            self.current_data_cache['cpu'] = {
+            self.current_data_cache["processes"] = processes_list_data
+            self.current_data_cache["memory"] = memory_system_data
+            self.current_data_cache["cpu"] = {
                 **cpu_model_raw_data,
-                'total_processes': len(processes_list_data),
-                'total_threads': sum(int(p.get('threads', 0)) for p in processes_list_data)
+                "total_processes": len(processes_list_data),
+                "total_threads": sum(int(p.get("threads", 0)) for p in processes_list_data),
             }
-
-            # atualiza o cache de informações do sistema de arquivos
-            self.current_data_cache['filesystem'] = filesystem_list_data
-
-            # atualiza o cache de diretórios e E/S de processos
-            self._clean_expired_cache()
-
-            """# atualiza o cache do conteúdo do diretório atual (padrão é '/')
-            self.current_data_cache['process_io'] = {}
-            for proc in processes_list_data:
-                pid = proc['pid']
-                self.current_data_cache['process_io'][pid] = {
-                    'io_stats': model.get_process_es_info(pid),
-                    'open_files': model.get_process_open_files(pid)
-                }"""
+            self.current_data_cache["filesystem"] = filesystem_list_data
+        """# atualiza o cache do conteúdo do diretório atual (padrão é '/')
+        self.current_data_cache['process_io'] = {}
+        for proc in processes_list_data:
+            pid = proc['pid']
+            self.current_data_cache['process_io'][pid] = {
+                'io_stats': model.get_process_es_info(pid),
+                'open_files': model.get_process_open_files(pid)
+            }"""
 
     #---------------------------------------------------------------------------------------------------#
 

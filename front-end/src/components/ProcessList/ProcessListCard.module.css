@@ -83,32 +83,32 @@
 /* Todas as colunas terão text-align: left e ellipsis */
 .tableContainer th,
 .tableContainer td {
-    width: 10%;
-    /* <<<<<<<<<<<< TODAS AS COLUNAS COM 10% */
-    padding: 10px 12px;
+    padding: 12px 16px;
     text-align: left !important;
     /* Garante alinhamento à esquerda */
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     border-bottom: 1px solid var(--border-soft);
+    background: transparent;
 }
 
 
 .tableContainer thead th {
-    background-color: var(--background-card);
-    color: var(--text-primary);
-    /* padding, text-align, white-space, border-bottom já definidos acima */
+    background-color: var(--background-body);
+    color: var(--accent-color-memory);
+    font-weight: bold;
+    font-size: 1.05rem;
+    border-bottom: 2px solid var(--accent-color-memory);
     cursor: pointer;
     user-select: none;
-    /* Se precisar de uma borda entre os cabeçalhos: */
-    /* border-right: 1px solid var(--border-body); */
+    letter-spacing: 0.01em;
 }
 
 /* .tableContainer thead th:last-child { border-right: none; } */
 
 .tableContainer thead th:hover {
-    background-color: var(--background-body);
+    background-color: var(--background-card);
 }
 
 .tableContainer tr:last-child td {

@@ -548,6 +548,8 @@ def get_cpu_usage():
         # atualiza os tempos anteriores com os snapshots atuais, para uso na próxima execução
         previous_per_core_cpu_times = current_core_times_snapshot_sys
 
+        print('Sucesso ao ler informações de CPU do sistema.')
+
         return cpu_stats_return
 
     except Exception as e_cpu_sys:
