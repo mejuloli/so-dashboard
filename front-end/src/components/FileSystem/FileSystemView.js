@@ -1,36 +1,25 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import Card from '../Card/Card'; // Componente base para o cartão visual.
+import Card from '../Card/Card'; // componente base de card
 import styles from './FileSystemView.module.css';
 
-// URL do endpoint da API para buscar informações do filesystem.
+// endpoint da api do filesystem
 const API_URL_FILESYSTEM = 'http://localhost:5000/api/filesystem';
 
-/**
- * Componente FileSystemView
- *
- * Exibe as partições do sistema de arquivos em formato de tabela.
- * Os dados são buscados periodicamente da API backend.
- */
+// componente de visão do sistema de arquivos
+// lista partições em tabela com ordenação
 const FileSystemView = () => {
-  // Estado para armazenar as partições.
-  const [partitions, setPartitions] = useState([]);
-  // Estado para controlar o carregamento inicial dos dados.
-  const [isLoading, setIsLoading] = useState(true);
-  // Estado para armazenar mensagens de erro da busca de dados.
-  const [fetchError, setFetchError] = useState(null);
-  // Estado para ordenação
-  const [sortBy, setSortBy] = useState('mountpoint');
-  const [sortDir, setSortDir] = useState('asc');
+  const [partitions, setPartitions] = useState([]); // partições
+  const [isLoading, setIsLoading] = useState(true); // carregamento
+  const [fetchError, setFetchError] = useState(null); // erro
+  const [sortBy, setSortBy] = useState('mountpoint'); // campo de ordenação
+  const [sortDir, setSortDir] = useState('asc'); // direção da ordenação
 
-  /**
-   * Função para buscar os dados do filesystem da API.
-   * Usa useCallback para memoização.
-   */
+  // busca dados do backend
   const fetchData = useCallback(async () => {
     try {
       const response = await fetch(API_URL_FILESYSTEM);
       if (!response.ok) {
-        throw new Error(`Erro HTTP: ${response.status} - ${response.statusText}`);
+        throw new Error(`erro http: ${response.status} - ${response.statusText}`);
       }
       const data = await response.json();
       setPartitions(data);
@@ -42,32 +31,24 @@ const FileSystemView = () => {
     }
   }, []);
 
-  // Efeito para buscar dados na montagem.
+  // carrega ao montar
   useEffect(() => {
     fetchData();
   }, [fetchData]);
 
-  // Função para ordenar as partições
+  // ordena a lista segundo coluna/direção
   const getSortedPartitions = () => {
     const sorted = [...partitions].sort((a, b) => {
       let vA, vB;
       switch (sortBy) {
-        case 'device':
-          vA = a.device || ''; vB = b.device || ''; break;
-        case 'mountpoint':
-          vA = a.mountpoint || ''; vB = b.mountpoint || ''; break;
-        case 'type':
-          vA = a.type || ''; vB = b.type || ''; break;
-        case 'total_gb':
-          vA = a.total_gb || 0; vB = b.total_gb || 0; break;
-        case 'used_gb':
-          vA = a.used_gb || 0; vB = b.used_gb || 0; break;
-        case 'free_gb':
-          vA = a.free_gb || 0; vB = b.free_gb || 0; break;
-        case 'usage_percent':
-          vA = a.usage_percent || 0; vB = b.usage_percent || 0; break;
-        default:
-          vA = a.mountpoint || ''; vB = b.mountpoint || ''; break;
+        case 'device': vA = a.device || ''; vB = b.device || ''; break;
+        case 'mountpoint': vA = a.mountpoint || ''; vB = b.mountpoint || ''; break;
+        case 'type': vA = a.type || ''; vB = b.type || ''; break;
+        case 'total_gb': vA = a.total_gb || 0; vB = b.total_gb || 0; break;
+        case 'used_gb': vA = a.used_gb || 0; vB = b.used_gb || 0; break;
+        case 'free_gb': vA = a.free_gb || 0; vB = b.free_gb || 0; break;
+        case 'usage_percent': vA = a.usage_percent || 0; vB = b.usage_percent || 0; break;
+        default: vA = a.mountpoint || ''; vB = b.mountpoint || ''; break;
       }
       if (vA < vB) return sortDir === 'asc' ? -1 : 1;
       if (vA > vB) return sortDir === 'asc' ? 1 : -1;
@@ -76,6 +57,7 @@ const FileSystemView = () => {
     return sorted;
   };
 
+  // alterna/define ordenação ao clicar no cabeçalho
   const handleSort = (col) => {
     if (sortBy === col) {
       setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
@@ -85,15 +67,23 @@ const FileSystemView = () => {
     }
   };
 
-  // --- Renderização Condicional ---
+  // renderização condicional: loading/erro
   if (isLoading) {
-    return <Card title="Sistema de Arquivos"><p className={styles.loadingText}>Carregando informações do sistema de arquivos...</p></Card>;
+    return (
+      <Card title="Sistema de Arquivos">
+        <p className={styles.loadingText}>Carregando informações do sistema de arquivos...</p>
+      </Card>
+    );
   }
   if (fetchError) {
-    return <Card title="Sistema de Arquivos"><p className={styles.errorText}>Erro: {fetchError}</p></Card>;
+    return (
+      <Card title="Sistema de Arquivos">
+        <p className={styles.errorText}>Erro: {fetchError}</p>
+      </Card>
+    );
   }
 
-  // --- Renderização Principal ---
+  // render principal
   return (
     <Card title="Partições do Sistema de Arquivos" className={styles.processListCard}>
       <div className={styles.controlsContainer}>
@@ -103,13 +93,27 @@ const FileSystemView = () => {
         <table>
           <thead>
             <tr>
-              <th onClick={() => handleSort('device')} style={{cursor:'pointer'}}>Dispositivo {sortBy==='device' ? (sortDir==='asc'?'▲':'▼') : ''}</th>
-              <th onClick={() => handleSort('mountpoint')} style={{cursor:'pointer'}}>Ponto de Montagem {sortBy==='mountpoint' ? (sortDir==='asc'?'▲':'▼') : ''}</th>
-              <th onClick={() => handleSort('type')} style={{cursor:'pointer'}}>Tipo {sortBy==='type' ? (sortDir==='asc'?'▲':'▼') : ''}</th>
-              <th onClick={() => handleSort('total_gb')} style={{cursor:'pointer'}}>Tamanho Total (GB) {sortBy==='total_gb' ? (sortDir==='asc'?'▲':'▼') : ''}</th>
-              <th onClick={() => handleSort('used_gb')} style={{cursor:'pointer'}}>Usado (GB) {sortBy==='used_gb' ? (sortDir==='asc'?'▲':'▼') : ''}</th>
-              <th onClick={() => handleSort('free_gb')} style={{cursor:'pointer'}}>Disponível (GB) {sortBy==='free_gb' ? (sortDir==='asc'?'▲':'▼') : ''}</th>
-              <th onClick={() => handleSort('usage_percent')} style={{cursor:'pointer'}}>Uso (%) {sortBy==='usage_percent' ? (sortDir==='asc'?'▲':'▼') : ''}</th>
+              <th onClick={() => handleSort('device')} style={{ cursor: 'pointer' }}>
+                Dispositivo {sortBy === 'device' ? (sortDir === 'asc' ? '▲' : '▼') : ''}
+              </th>
+              <th onClick={() => handleSort('mountpoint')} style={{ cursor: 'pointer' }}>
+                Ponto de Montagem {sortBy === 'mountpoint' ? (sortDir === 'asc' ? '▲' : '▼') : ''}
+              </th>
+              <th onClick={() => handleSort('type')} style={{ cursor: 'pointer' }}>
+                Tipo {sortBy === 'type' ? (sortDir === 'asc' ? '▲' : '▼') : ''}
+              </th>
+              <th onClick={() => handleSort('total_gb')} style={{ cursor: 'pointer' }}>
+                Tamanho Total (GB) {sortBy === 'total_gb' ? (sortDir === 'asc' ? '▲' : '▼') : ''}
+              </th>
+              <th onClick={() => handleSort('used_gb')} style={{ cursor: 'pointer' }}>
+                Usado (GB) {sortBy === 'used_gb' ? (sortDir === 'asc' ? '▲' : '▼') : ''}
+              </th>
+              <th onClick={() => handleSort('free_gb')} style={{ cursor: 'pointer' }}>
+                Disponível (GB) {sortBy === 'free_gb' ? (sortDir === 'asc' ? '▲' : '▼') : ''}
+              </th>
+              <th onClick={() => handleSort('usage_percent')} style={{ cursor: 'pointer' }}>
+                Uso (%) {sortBy === 'usage_percent' ? (sortDir === 'asc' ? '▲' : '▼') : ''}
+              </th>
             </tr>
           </thead>
           <tbody>

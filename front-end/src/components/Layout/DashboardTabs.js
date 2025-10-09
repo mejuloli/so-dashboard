@@ -9,34 +9,31 @@ import SystemSummaryCards from '../SystemTotals/TotalSystemMetricsCard';
 import FileSystemView from '../FileSystem/FileSystemView';
 import DirectoryTree from '../FileSystem/DirectoryTree';
 
-/**
- * Componente DashboardTabs
- *
- * Exibe as abas "Visão Geral" (dashboard principal) e "Sistema de Arquivos" (filesystem e navegação de diretórios).
- * Mantém o padrão visual do dashboard, com header e cards.
- */
+// componente principal das abas do dashboard
+// alterna entre visão geral e sistema de arquivos
 const DashboardTabs = () => {
-  const [selectedTab, setSelectedTab] = useState('dashboard');
-  const [selectedProcessForDetail, setSelectedProcessForDetail] = useState(null);
+  const [selectedTab, setSelectedTab] = useState('dashboard'); // aba ativa
+  const [selectedProcessForDetail, setSelectedProcessForDetail] = useState(null); // processo selecionado
 
-  // O seletor de abas agora é um elemento separado para ser passado ao header
+  // seletor de abas exibido no header
   const tabsHeader = (
     <div className={styles.tabsHeader}>
       <button
         className={selectedTab === 'dashboard' ? styles.activeTab : styles.tab}
         onClick={() => setSelectedTab('dashboard')}
       >
-        Visão Geral
+        visão geral
       </button>
       <button
         className={selectedTab === 'filesystem' ? styles.activeTab : styles.tab}
         onClick={() => setSelectedTab('filesystem')}
       >
-        Sistema de Arquivos
+        sistema de arquivos
       </button>
     </div>
   );
 
+  // render principal do layout com abas
   return (
     <DashboardLayout headerTabs={tabsHeader}>
       <div className={styles.dashboardTabsContainer}>
@@ -51,9 +48,13 @@ const DashboardTabs = () => {
                 <SystemSummaryCards />
               </div>
               <ProcessListCard onProcessSelect={setSelectedProcessForDetail} />
-              <ProcessDetailModal process={selectedProcessForDetail} onClose={() => setSelectedProcessForDetail(null)} />
+              <ProcessDetailModal
+                process={selectedProcessForDetail}
+                onClose={() => setSelectedProcessForDetail(null)}
+              />
             </>
           )}
+
           {selectedTab === 'filesystem' && (
             <>
               <FileSystemView />

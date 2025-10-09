@@ -6,9 +6,7 @@
 }
 
 .summaryCardsContainer {
-  /* cards de totais */
   display: grid;
-  /* cria duas colunas se houver espaço, senão uma */
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
   gap: var(--padding-main);
 }
